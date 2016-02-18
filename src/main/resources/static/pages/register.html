@@ -1,0 +1,67 @@
+<div>
+	<div class="col-lg-3 col-md-3 col-sm-2"></div>
+	<div class="col-lg-6 col-md-6 col-sm-8">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form class="form-signin" name="registerForm"
+					ng-submit="register(registerForm.$valid)" novalidate>
+					<!-- novalidate remove a validação do html5 -->
+					<h2 class="form-signin-heading">Registro</h2>
+					<h5 style="color: #999">Preencha os campos a seguir para criar
+						uma nova conta</h5>
+					<br />
+
+					<div class="form-group" ng-class="{ 'has-error': registerForm.name.$touched && registerForm.name.$invalid }">
+						<label>Nome Completo</label> <input type="name" name="name"
+							ng-model="form.inputName" class="form-control" required autofocus>
+						<div class="help-block" ng-messages="registerForm.name.$error"
+							ng-if="!registerForm.name.$pristine">
+							<p ng-message="required">Seu nome é obrigatório.</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': registerForm.email.$touched && registerForm.email.$invalid }">
+						<label for="inputEmail">Endereço de e-mail</label> <input
+							type="email" name="email" ng-model="form.inputEmail"
+							class="form-control" required>
+						<div class="help-block" ng-messages="registerForm.email.$error"
+							ng-if="!registerForm.email.$pristine">
+							<p ng-message="email">Insira um e-mail válido</p>
+						</div>
+					</div>
+
+					<div class="form-group" ng-class="{ 'has-error': registerForm.password.$touched && registerForm.password.$invalid }">
+						<label>Senha</label> <input
+							type="{{ showPassword ? 'text' : 'password' }}" name="password"
+							ng-model="form.inputPassword" class="form-control" required
+							ng-minlength="6" ng-maxlength="12">
+
+						<div class="help-block" ng-messages="registerForm.password.$error"
+							ng-if="!registerForm.password.$pristine">
+							<p ng-message="minlength">A senha está muito curta, precisa
+								ter no mínimo 6 letras ou números.</p>
+							<p ng-message="maxlength">A senha está muito longa, precisa
+								ter no máximo 12 letras ou números.</p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<input type="checkbox" id="inputShowPassword"
+							ng-model="showPassword"> <label for="inputShowPassword">Mostrar
+							Senha</label>
+					</div>
+
+					<div class="alert alert-danger alert-dismissible" role="alert" ng-show="errorMessage">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						{{errorMessage}}
+					</div>
+					
+					<button type="submit" class="btn btn-lg btn-success btn-block"
+						ng-disabled="registerForm.$invalid">Concluir Registro</button>
+					<br />
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-2"></div>
+</div>
