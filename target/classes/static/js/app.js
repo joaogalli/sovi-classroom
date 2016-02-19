@@ -67,11 +67,33 @@ app.controller('NavigationController', [ '$scope', '$rootScope',
 			});
 		} ]);
 
-app.controller('MenuController', [ '$scope', '$rootScope',
-		function($scope, $rootScope) {
+app.controller('MenuController', [ '$scope', '$rootScope', '$location',
+		function($scope, $rootScope, $location) {
+			$scope.pills = [ {
+				name : "Dashboard",
+				url : "/dashboard"
+			}, {
+				name : "Cursos",
+				url : "/courses"
+			}, {
+				name : "Calendário",
+				url : "/calendar"
+			}, {
+				name : "Alunos",
+				url : "/students"
+			}, {
+				name : "Professores",
+				url : "/teachers"
+			} ];
+
 			$rootScope.$watch('authenticated', function(newValue) {
 				$scope.isAuthenticated = newValue;
 			});
+
+			$rootScope.$on('$locationChangeSuccess', function(a) {
+				$scope.location = $location.url();
+			});
+
 		} ]);
 
 app.controller('HomeController', [ '$scope', 'PessoaService',
