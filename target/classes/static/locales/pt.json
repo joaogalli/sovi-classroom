@@ -1,6 +1,0 @@
-{
-	"error.registeruser.username_missing" : "O nome de usuário é obrigatório para registrar o usuário.",
-	"error.registeruser.email_missing" : "O e-mail é obrigatório para registrar o usuário.",
-	"error.registeruser.password_missing" : "A senha é obrigatória para registrar o usuário.",
-	"error.registeruser.username_exists" : "Este nome de usuário já foi usado para outro usuário."
-}
