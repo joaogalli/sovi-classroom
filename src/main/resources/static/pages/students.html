@@ -4,31 +4,43 @@
  -->
 <hr />
 <button class="btn btn-info btn-sm" ng-click="createOrEditBean()">Novo
-	Curso</button>
+	Aluno</button>
 <button class="btn btn-info btn-sm" ng-click="update()">Atualizar</button>
 <hr />
 
 <div ng-show="!isConsult" class="well bs-component">
 
-	<form class="form-horizontal" name="beanForm"
-		novalidate>
+	<form class="form-horizontal" name="beanForm" novalidate>
 		<fieldset>
 			<div class="form-group"
 				ng-class="{ 'has-error': beanForm.name.$touched && beanForm.name.$invalid }">
-				<label class="col-lg-2 control-label">Nome do Curso</label>
+				<label class="col-lg-2 control-label">Nome do aluno</label>
 				<div class="col-lg-10">
 					<input type="text" name="name" ng-model="form.name"
 						class="form-control" required autofocus>
 				</div>
-
+				
 				<div class="help-block" ng-messages="beanForm.name.$error"
 					ng-if="!beanForm.name.$pristine">
-					<p ng-message="required">Preencha o nome do curso.</p>
+					<p ng-message="required">Preencha o nome do aluno.</p>
 				</div>
 			</div>
 
-			<button class="btn btn-success"
-				ng-click="saveForm(beanForm.$valid)" ng-disabled="beanForm.$invalid">Salvar</button>
+			<div class="form-group">
+				<label class="col-lg-2 control-label">E-Mail</label>
+				<div class="col-lg-10">
+					<input type="email" name="email" ng-model="form.email"
+						class="form-control">
+				</div>
+
+				<div class="help-block" ng-messages="beanForm.email.$error"
+					ng-if="!beanForm.email.$pristine">
+					<p ng-message="email">Insira um e-mail válido.</p>
+				</div>
+			</div>
+
+			<button class="btn btn-success" ng-click="saveForm(beanForm.$valid)"
+				ng-disabled="beanForm.$invalid">Salvar</button>
 
 			<button class="btn btn-link" ng-click="cancelForm()">Cancelar</button>
 		</fieldset>
@@ -41,11 +53,15 @@
 		<thead>
 			<tr>
 				<th>Nome</th>
+				<th>E-Mail</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr style="cursor: pointer" ng-repeat="bean in beans | orderBy: 'name'" ng-click="$parent.createOrEditBean(bean.id)">
+			<tr style="cursor: pointer"
+				ng-repeat="bean in beans | orderBy: 'name'"
+				ng-click="$parent.createOrEditBean(bean.id)">
 				<td>{{bean.name}}</td>
+				<td>{{bean.email}}</td>
 			</tr>
 		</tbody>
 	</table>

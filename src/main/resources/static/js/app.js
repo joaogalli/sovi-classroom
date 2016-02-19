@@ -1,6 +1,6 @@
 var app = angular.module('app', [ 'ngRoute', 'ngMessages',
 		'pascalprecht.translate', 'UserRegister', 'Authentication', 'Api',
-		'Parameter' ]);
+		'Parameter', 'ApiCrud' ]);
 
 app.config([
 		'$translateProvider',
@@ -40,6 +40,10 @@ app.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'pages/courses.html',
 		controller : 'CourseController'
 	})
+	.when('/students', {
+		templateUrl : 'pages/students.html',
+		controller : 'StudentController'
+	})
 
 	;
 
@@ -52,6 +56,11 @@ app.factory('PessoaService', [ 'ApiService', function(ApiService) {
 
 app.factory('CourseService', [ 'ApiService', function(ApiService) {
 	ApiService.setCollection('courses');
+	return ApiService;
+} ]);
+
+app.factory('StudentService', [ 'ApiService', function(ApiService) {
+	ApiService.setCollection('students');
 	return ApiService;
 } ]);
 
@@ -172,63 +181,23 @@ app.controller('LoginController', [
 		} ]);
 
 app.controller('CourseController', [ '$scope', 'CourseService',
-		function($scope, CourseService) {
-			$scope.isConsult = true;
-			$scope.beanForm = {};
-			$scope.beans = [];
-
-			function showConsult(update) {
-				$scope.isConsult = true;
-				update && $scope.update();
+		'ApiCrudController', function($scope, CourseService, ApiCrudController) {
+			for ( var attrname in ApiCrudController) {
+				$scope[attrname] = ApiCrudController[attrname];
 			}
-
-			function showForm() {
-				$scope.isConsult = false;
-			}
-
-			$scope.update = function() {
-				$scope.beans = [];
-				CourseService.findAll(function(error, data) {
-					if (error) {
-						console.error("Não foi possível recuperar.");
-					} else
-						$scope.beans = data;
-				});
-				showConsult();
-			};
-
+			$scope.setApiService(CourseService);
 			$scope.update();
 
-			$scope.showForm = function(beanId) {
-				if (beanId) {
-					CourseService.findById(beanId, function(error, data) {
-						if (error) {
-							showFormError();
-						} else {
-							$scope.form = data;
-							showForm();
-						}
-					});
-				} else {
-					$scope.beanForm = {};
-					showForm();
-				}
+			console.log($scope);
+		} ]);
+
+app.controller('StudentController', [ '$scope', 'StudentService',
+		'ApiCrudController', function($scope, StudentService, ApiCrudController) {
+			for ( var attrname in ApiCrudController) {
+				$scope[attrname] = ApiCrudController[attrname];
 			}
+			$scope.setApiService(StudentService);
+			$scope.update();
 
-			$scope.saveForm = function(isValid) {
-				CourseService.save($scope.form, function(error, data) {
-					if (error) {
-						console.log(error);
-					} else {
-						$scope.form = {};
-						showConsult(true);
-					}
-				});
-			};
-
-			$scope.cancelForm = function() {
-				$scope.form = {};
-				showConsult();
-			}
-
+			console.log($scope);
 		} ]);
