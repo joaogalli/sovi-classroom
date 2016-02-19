@@ -3,17 +3,19 @@
 	<div class="col-lg-6 col-md-6 col-sm-8">
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<form class="form-signin" name="loginForm" ng-submit="login(loginForm.$valid)" novalidate>
-				
+				<form class="form-signin" name="loginForm"
+					ng-submit="login(loginForm.$valid)" novalidate>
+
 					<h2 class="form-signin-heading">Autenticação</h2>
-					<h5 style="color: #999">Insira seu e-mail e senha para acessar o sistema</h5>
+					<h5 style="color: #999">Insira seu e-mail e senha para acessar
+						o sistema</h5>
 					<br />
 
 					<div class="form-group"
 						ng-class="{ 'has-error': loginForm.email.$touched && loginForm.email.$invalid }">
-						<label for="inputEmail">E-mail</label> <input
-							type="email" name="email" ng-model="form.inputEmail"
-							class="form-control" required autofocus>
+						<label for="inputEmail">E-mail</label> <input type="email"
+							name="email" ng-model="form.inputEmail" class="form-control"
+							required autofocus>
 						<div class="help-block" ng-messages="loginForm.email.$error"
 							ng-if="!loginForm.email.$pristine">
 							<p ng-message="email">Insira um e-mail válido</p>
@@ -43,11 +45,11 @@
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						{{errorMessage}}
 					</div>
-					
+
 					<button type="submit" class="btn btn-lg btn-primary btn-block"
 						ng-disabled="loginForm.$invalid">Entrar</button>
 					<br />
-					
+
 					<!-- <div class="form-group">
 						<label> <input type="checkbox" ng-model="inputRememberMe"
 							value="remember-me"> Lembrar-me neste computador

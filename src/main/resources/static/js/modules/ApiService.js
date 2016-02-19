@@ -2,10 +2,10 @@
 	angular.module('Api', []).service('ApiService', [ '$http', function($http) {
 
 		var save = function(document, callback) {
-			$http.post('/api/' + this.collection).then(function(response) {
+			$http.post('/api/' + this.collection, JSON.stringify(document)).then(function(response) {
 				callback(null, response.data);
 			}, function(data) {
-				callback(null, data);
+				callback(data);
 			});
 		};
 

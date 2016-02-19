@@ -87,6 +87,14 @@
 			<!-- /.container-fluid -->
 		</nav>
 
+		<ul class="nav nav-pills" ng-controller="MenuController" ng-show="isAuthenticated">
+			<li class="active"><a href="#dashboard">Dashboard</a></li>
+			<li><a href="#courses">Cursos</a></li>
+			<li><a href="#calendario">Calendário</a></li>
+			<li><a href="#alunos">Alunos</a></li>
+			<li><a href="#professores">Professores</a></li>
+		</ul>
+
 		<div ng-view></div>
 	</div>
 </body>

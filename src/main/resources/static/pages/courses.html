@@ -1,0 +1,53 @@
+<!-- <h2>
+	Cursos 
+</h2>
+ -->
+<hr />
+<button class="btn btn-info btn-sm" ng-click="showForm()">Novo
+	Curso</button>
+<button class="btn btn-info btn-sm" ng-click="update()">Atualizar</button>
+<hr />
+
+<div ng-show="!isConsult" class="well bs-component">
+
+	<form class="form-horizontal" name="beanForm"
+		novalidate>
+		<fieldset>
+			<div class="form-group"
+				ng-class="{ 'has-error': beanForm.name.$touched && beanForm.name.$invalid }">
+				<label class="col-lg-2 control-label">Nome do Curso</label>
+				<div class="col-lg-10">
+					<input type="text" name="name" ng-model="form.name"
+						class="form-control" required autofocus>
+				</div>
+
+				<div class="help-block" ng-messages="beanForm.name.$error"
+					ng-if="!beanForm.name.$pristine">
+					<p ng-message="required">Preencha o nome do curso.</p>
+				</div>
+			</div>
+
+			<button class="btn btn-success"
+				ng-click="saveForm(beanForm.$valid)" ng-disabled="beanForm.$invalid">Salvar</button>
+
+			<button class="btn btn-link" ng-click="cancelForm()">Cancelar</button>
+		</fieldset>
+	</form>
+
+</div>
+
+<div ng-show="isConsult">
+	<table class="table table-striped table-hover ">
+		<thead>
+			<tr>
+				<th>Nome</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr style="cursor: pointer" ng-repeat="bean in beans | orderBy: 'name'" ng-click="showForm(bean.id)">
+				<td>{{bean.name}}</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

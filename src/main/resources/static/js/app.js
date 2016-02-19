@@ -25,27 +25,33 @@ app.config([ '$routeProvider', function($routeProvider) {
 	.when('/', {
 		templateUrl : 'pages/home.html',
 		controller : 'HomeController'
-	})
-
-	.when('/login', {
+	}).when('/login', {
 		templateUrl : 'pages/login.html',
 		controller : 'LoginController'
-	})
-
-	.when('/login/:username', {
+	}).when('/login/:username', {
 		templateUrl : 'pages/login.html',
 		controller : 'LoginController'
-	})
-
-	.when('/register', {
+	}).when('/register', {
 		templateUrl : 'pages/register.html',
 		controller : 'RegisterController'
-	});
+	})
+
+	.when('/courses', {
+		templateUrl : 'pages/courses.html',
+		controller : 'CourseController'
+	})
+
+	;
 
 } ]);
 
 app.factory('PessoaService', [ 'ApiService', function(ApiService) {
 	ApiService.setCollection('pessoas');
+	return ApiService;
+} ]);
+
+app.factory('CourseService', [ 'ApiService', function(ApiService) {
+	ApiService.setCollection('courses');
 	return ApiService;
 } ]);
 
@@ -56,6 +62,13 @@ app.controller('NavigationController', [ '$scope', '$rootScope',
 				AuthenticationService.logout();
 			};
 
+			$rootScope.$watch('authenticated', function(newValue) {
+				$scope.isAuthenticated = newValue;
+			});
+		} ]);
+
+app.controller('MenuController', [ '$scope', '$rootScope',
+		function($scope, $rootScope) {
 			$rootScope.$watch('authenticated', function(newValue) {
 				$scope.isAuthenticated = newValue;
 			});
@@ -126,7 +139,6 @@ app.controller('LoginController', [
 			$scope.login = function() {
 				AuthenticationService.authenticate($scope.form.inputEmail,
 						$scope.form.inputPassword, function(error, isAuthenticated) {
-							console.log('isAuthenticated: ', isAuthenticated);
 							if (isAuthenticated) {
 								$location.url('dashboard');
 							} else {
@@ -134,5 +146,67 @@ app.controller('LoginController', [
 							}
 						});
 			};
+
+		} ]);
+
+app.controller('CourseController', [ '$scope', 'CourseService',
+		function($scope, CourseService) {
+			$scope.isConsult = true;
+			$scope.beanForm = {};
+			$scope.beans = [];
+
+			function showConsult(update) {
+				$scope.isConsult = true;
+				update && $scope.update();
+			}
+
+			function showForm() {
+				$scope.isConsult = false;
+			}
+
+			$scope.update = function() {
+				$scope.beans = [];
+				CourseService.findAll(function(error, data) {
+					if (error) {
+						console.error("Não foi possível recuperar.");
+					} else
+						$scope.beans = data;
+				});
+				showConsult();
+			};
+
+			$scope.update();
+
+			$scope.showForm = function(beanId) {
+				if (beanId) {
+					CourseService.findById(beanId, function(error, data) {
+						if (error) {
+							showFormError();
+						} else {
+							$scope.form = data;
+							showForm();
+						}
+					});
+				} else {
+					$scope.beanForm = {};
+					showForm();
+				}
+			}
+
+			$scope.saveForm = function(isValid) {
+				CourseService.save($scope.form, function(error, data) {
+					if (error) {
+						console.log(error);
+					} else {
+						$scope.form = {};
+						showConsult(true);
+					}
+				});
+			};
+
+			$scope.cancelForm = function() {
+				$scope.form = {};
+				showConsult();
+			}
 
 		} ]);

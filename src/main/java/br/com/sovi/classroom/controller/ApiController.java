@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+
+import br.com.sovi.classroom.util.JsonUtils;
 
 /**
  * @author Joao Eduardo Galli <joaogalli@gmail.com>
@@ -30,64 +31,46 @@ import com.mongodb.client.model.Filters;
  */
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+public class ApiController extends AbstractController {
 
 	private MongoDatabase db;
-
-	private Gson gson;
 
 	@PostConstruct
 	private void init() {
 		// Criar service para abstrair o mongodb
 		MongoClient mongoClient = new MongoClient();
 		db = mongoClient.getDatabase("test");
-
-		// Criar Parser para abstrair GSON
-		gson = new Gson();
-		// gson = new GsonBuilder().registerTypeHierarchyAdapter(Bson.class,
-		// adapter).create();
 	}
 
 	@RequestMapping(value = "/*", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<String> findAll(HttpServletRequest request) {
-		System.out.println("ApiController.findAll()");
+		logger.debug("Find All");
 
 		String collectionName = getCollectionName(request);
-		System.out.println("Collection: " + collectionName);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find();
 		List<Document> documents = new ArrayList<Document>();
 		for (Document document : iterable) {
+			document.append("id", document.get("_id").toString());
 			documents.add(document);
 		}
 
-		// TODO usar parser
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("[");
-//		for (Document document : iterable) {
-//			sb.append(document.toJson()).append(", ");
-//		}
-//		sb.delete(sb.length()-2, sb.length());
-//		sb.append("]");
-//		
-//		return new ResponseEntity<String>(sb.toString(), HttpStatus.OK);
-		
-		return new ResponseEntity<String>(gson.toJson(documents), HttpStatus.OK);
+		return new ResponseEntity<String>(JsonUtils.toJson(documents), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/*/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<String> get(@PathVariable("id") String id, HttpServletRequest request) {
-		System.out.println("ApiController.get()");
-
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(id)));
 		Document document = iterable.first();
 
-		if (document != null)
+		if (document != null) {
+			document.append("id", document.get("_id").toString());
 			return new ResponseEntity<String>(document.toJson(), HttpStatus.OK);
+		}
 		else
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 	}
@@ -95,15 +78,20 @@ public class ApiController {
 	@RequestMapping(value = "/*", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
-		System.out.println("ApiController.save()");
-
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 		Document document = Document.parse(requestBody);
-		// Está inserindo Id
-		collection.insertOne(document);
 
-		return new ResponseEntity<String>(gson.toJson(document), HttpStatus.OK);
+		// The key id is always removed
+		if (document.containsKey("id"))
+			document.remove("id");
+
+		if (document.containsKey("_id"))
+			collection.replaceOne(new Document("_id", document.get("_id")), document);
+		else
+			collection.insertOne(document);
+
+		return new ResponseEntity<String>(JsonUtils.toJson(document), HttpStatus.OK);
 	}
 
 	private String getCollectionName(HttpServletRequest request) {
