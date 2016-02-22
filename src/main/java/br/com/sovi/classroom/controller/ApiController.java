@@ -10,8 +10,10 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,12 +46,31 @@ public class ApiController extends AbstractController {
 
 	@RequestMapping(value = "/*", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<String> findAll(HttpServletRequest request) {
+	public ResponseEntity<String> findAll(HttpServletRequest request,
+			@RequestHeader(value = "sort", required = false) String sort) {
 		logger.debug("Find All");
+
+		Document sortDocument = new Document();
+		if (StringUtils.hasText(sort)) {
+			String[] split = sort.split(",");
+			for (String string : split) {
+				if (StringUtils.hasText(string)) {
+					// Caso o header de sort tenha - na frente, é descendente.
+					if (string.charAt(0) == '-') {
+						sortDocument.append(string.substring(1), -1);
+					}
+					else {
+						sortDocument.append(string, 1);
+					}
+				}
+			}
+		}
 
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
-		FindIterable<Document> iterable = collection.find();
+
+		FindIterable<Document> iterable = collection.find().sort(sortDocument);
+
 		List<Document> documents = new ArrayList<Document>();
 		for (Document document : iterable) {
 			document.append("id", document.get("_id").toString());

@@ -58,7 +58,7 @@
 		</thead>
 		<tbody>
 			<tr style="cursor: pointer"
-				ng-repeat="bean in beans | orderBy: 'name'"
+				ng-repeat="bean in beans"
 				ng-click="$parent.createOrEditBean(bean.id)">
 				<td>{{bean.name}}</td>
 				<td>{{bean.email}}</td>

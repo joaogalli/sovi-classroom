@@ -168,6 +168,7 @@ app.controller('CourseController', [ '$scope', 'CourseService',
 app.controller('StudentController', [ '$scope', 'StudentService',
 		'ApiCrudController', function($scope, StudentService, ApiCrudController) {
 			ApiCrudController.build($scope);
+			StudentService.setSort(["name"]);
 			$scope.setApiService(StudentService);
 			$scope.update();
 		} ]);

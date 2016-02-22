@@ -15,11 +15,16 @@
 						};
 
 						var findAll = function(callback) {
-							$http.get('/api/' + this.collection).then(function(response) {
-								callback(null, response.data);
-							}, function(data) {
-								console.error(data);
-							});
+							var headers = {};
+							if (this.sortString)
+								headers['sort'] = this.sortString;
+							
+							$http.get('/api/' + this.collection, { headers: headers }).then(
+									function(response) {
+										callback(null, response.data);
+									}, function(data) {
+										console.error(data);
+									});
 						};
 
 						var findById = function(id, callback) {
@@ -31,12 +36,17 @@
 									});
 						};
 
+						var setSort = function(propertiesArray) {
+							this.sortString = propertiesArray.join();
+						};
+
 						// Especificar o Service aqui, para ser copiado no build()
 						var self = {
-								collection: null,
-								save: save,
-								findAll: findAll,
-								findById: findById
+							collection : null,
+							save : save,
+							findAll : findAll,
+							findById : findById,
+							setSort : setSort
 						};
 
 						return {
