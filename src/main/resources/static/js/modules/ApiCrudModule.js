@@ -70,7 +70,7 @@
 
 		this.isConsult = true;
 
-		return {
+		var self = {
 			isConsult : this.isConsult,
 			form : this.form,
 			beans : this.beans,
@@ -83,5 +83,12 @@
 			saveForm : saveForm,
 			cancelForm : cancelForm
 		};
+		
+		return {
+			build: function(service) {
+				angular.extend(service, self);
+			}
+		};
+		
 	} ]);
 }());

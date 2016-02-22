@@ -160,18 +160,14 @@ app.controller('LoginController', [
 app.controller('CourseController', [ '$scope', 'CourseService',
 		'StudentService', 'ApiCrudController',
 		function($scope, CourseService, StudentService, ApiCrudController) {
-			for ( var attrname in ApiCrudController) {
-				$scope[attrname] = ApiCrudController[attrname];
-			}
+			ApiCrudController.build($scope);
 			$scope.setApiService(CourseService);
 			$scope.update();
 		} ]);
 
 app.controller('StudentController', [ '$scope', 'StudentService',
 		'ApiCrudController', function($scope, StudentService, ApiCrudController) {
-			for ( var attrname in ApiCrudController) {
-				$scope[attrname] = ApiCrudController[attrname];
-			}
+			ApiCrudController.build($scope);
 			$scope.setApiService(StudentService);
 			$scope.update();
 		} ]);
