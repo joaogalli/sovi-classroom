@@ -39,8 +39,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 	.when('/courses', {
 		templateUrl : 'pages/courses.html',
 		controller : 'CourseController'
-	})
-	.when('/students', {
+	}).when('/students', {
 		templateUrl : 'pages/students.html',
 		controller : 'StudentController'
 	})
@@ -49,19 +48,12 @@ app.config([ '$routeProvider', function($routeProvider) {
 
 } ]);
 
-app.factory('PessoaService', [ 'ApiService', function(ApiService) {
-	ApiService.setCollection('pessoas');
-	return ApiService;
-} ]);
-
 app.factory('CourseService', [ 'ApiService', function(ApiService) {
-	ApiService.setCollection('courses');
-	return ApiService;
+	return ApiService.build('courses');
 } ]);
 
 app.factory('StudentService', [ 'ApiService', function(ApiService) {
-	ApiService.setCollection('students');
-	return ApiService;
+	return ApiService.build('students');
 } ]);
 
 app.controller('NavigationController', [ '$scope', '$rootScope',
@@ -105,23 +97,8 @@ app.controller('MenuController', [ '$scope', '$rootScope', '$location',
 
 		} ]);
 
-app.controller('HomeController', [ '$scope', 'PessoaService',
-		function($scope, PessoaService) {
-			PessoaService.findAll(function(error, data) {
-				console.log('findAll callback');
-				$scope.pessoas = data;
-			});
-
-			PessoaService.findById('56c12e3f18083c24b3664d02', function(error, data) {
-				console.log('findById callback');
-				if (error) {
-					console.error(error);
-				} else {
-					console.log(data.name);
-				}
-			});
-
-		} ]);
+app.controller('HomeController', [ '$scope', function($scope) {
+} ]);
 
 app.controller('RegisterController', [ '$scope', 'RegisterService',
 		'$location', function($scope, RegisterService, $location) {
@@ -181,14 +158,13 @@ app.controller('LoginController', [
 		} ]);
 
 app.controller('CourseController', [ '$scope', 'CourseService',
-		'ApiCrudController', function($scope, CourseService, ApiCrudController) {
+		'StudentService', 'ApiCrudController',
+		function($scope, CourseService, StudentService, ApiCrudController) {
 			for ( var attrname in ApiCrudController) {
 				$scope[attrname] = ApiCrudController[attrname];
 			}
 			$scope.setApiService(CourseService);
 			$scope.update();
-
-			console.log($scope);
 		} ]);
 
 app.controller('StudentController', [ '$scope', 'StudentService',
@@ -198,6 +174,4 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			}
 			$scope.setApiService(StudentService);
 			$scope.update();
-
-			console.log($scope);
 		} ]);
