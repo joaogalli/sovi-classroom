@@ -34,8 +34,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 		.and().authorizeRequests()
 
-		.antMatchers("/", "/index.html", "/pages/**", "/locales/**", "/bootstrap/**", "/js/**", "/css/**", "/fonts/**")
+		.antMatchers("/", "/index.html", "/locales/**", "/bootstrap/**", "/js/**", "/css/**", "/fonts/**")
 				.permitAll()
+				
+		.antMatchers("/pages/login.html", "/pages/home.html", "/pages/register.html").permitAll()		
 
 		.antMatchers("/registernewuser", "/param/**").permitAll()
 
@@ -44,8 +46,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.and().logout().logoutUrl("/logout").logoutSuccessUrl("/")
 
 		.and().csrf().disable();
-		// .authenticated()
-		// .and()
 		// .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 		// .csrf().csrfTokenRepository(csrfTokenRepository());
 	}
@@ -63,10 +63,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
-	// public static void main(String[] args) {
-	// System.out.println(new BCryptPasswordEncoder().encode("asd"));
-	// }
 
 	private AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

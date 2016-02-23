@@ -74,7 +74,6 @@ public class ApiController extends AbstractController {
 		FindIterable<Document> iterable = collection.find().sort(sortDocument);
 
 		if (page != null && pageLength != null) {
-			logger.info("paginating: " + page + " - " + pageLength);
 			iterable = iterable.skip(page * pageLength).limit(pageLength);
 		}
 

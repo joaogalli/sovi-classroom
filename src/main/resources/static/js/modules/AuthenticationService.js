@@ -12,7 +12,8 @@
 					[
 							'$http',
 							'$rootScope',
-							function($http, $rootScope) {
+							'$location',
+							function($http, $rootScope, $location) {
 
 								// Authenticate
 								var authenticate = function(username, password,
@@ -61,7 +62,11 @@
 								};
 
 								// TODO colocar no app.js?
-								authenticate();
+								authenticate(null, null, function(error, isAuthenticated) {
+									if (error || !isAuthenticated) {
+										$location.path('/login');
+									}
+								});
 
 								// Logout
 								var logout = function() {
