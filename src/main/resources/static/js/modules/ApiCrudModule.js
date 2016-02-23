@@ -88,7 +88,7 @@
 		}
 
 		var goPage = function(page) {
-			if (page >= 0 && page <= this.pageLength) {
+			if (page >= 0 && page < this.numberOfPages.length) {
 				this.page = page;
 				this.update();
 			}
@@ -106,7 +106,7 @@
 			this.pageLength = pageLength;
 		}
 
-		this.numberOfPages = [];
+		this.numberOfPages = new Array(1);
 		this.isConsult = true;
 
 		var self = {
