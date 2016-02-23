@@ -118,7 +118,6 @@ app.controller('RegisterController', [ '$scope', 'RegisterService',
 						if (error)
 							$scope.errorMessage = error;
 						else {
-
 							$location.path('login/' + $scope.form.inputEmail);
 						}
 					});
@@ -130,14 +129,15 @@ app.controller('RegisterController', [ '$scope', 'RegisterService',
 		} ]);
 
 app.controller('LoginController', [
+		'$rootScope',
 		'$scope',
 		'$location',
 		'$routeParams',
 		'AuthenticationService',
 		'$location',
 		'ParameterService',
-		function($scope, $location, $routeParams, AuthenticationService, $location,
-				ParameterService) {
+		function($rootScope, $scope, $location, $routeParams,
+				AuthenticationService, $location, ParameterService) {
 			$scope.form = {};
 
 			if ($routeParams.username) {
@@ -148,7 +148,11 @@ app.controller('LoginController', [
 				AuthenticationService.authenticate($scope.form.inputEmail,
 						$scope.form.inputPassword, function(error, isAuthenticated) {
 							if (isAuthenticated) {
-								$location.url('dashboard');
+								if ($rootScope.nextLoadedTemplateUrl) {
+									$location.path($rootScope.nextLoadedTemplateUrl);
+									$rootScope.nextLoadedTemplateUrl = null;
+								} else
+									$location.url('dashboard');
 							} else {
 								$scope.errorMessage = error;
 							}
@@ -161,7 +165,7 @@ app.controller('CourseController', [ '$scope', 'CourseService',
 		'StudentService', 'ApiCrudController',
 		function($scope, CourseService, StudentService, ApiCrudController) {
 			ApiCrudController.build($scope);
-			CourseService.setSort(["name"]);
+			CourseService.setSort([ "name" ]);
 			$scope.setApiService(CourseService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
@@ -170,8 +174,25 @@ app.controller('CourseController', [ '$scope', 'CourseService',
 app.controller('StudentController', [ '$scope', 'StudentService',
 		'ApiCrudController', function($scope, StudentService, ApiCrudController) {
 			ApiCrudController.build($scope);
-			StudentService.setSort(["name"]);
+			StudentService.setSort([ "name" ]);
 			$scope.setApiService(StudentService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
 		} ]);
+
+app.run([ "$rootScope", "$location", function($rootScope, $location) {
+	$rootScope.$on("$routeChangeError", function(event, next, previous, error) {
+		// We can catch the error thrown when the $requireAuth promise is
+		// rejected
+		// and redirect the user back to the home page
+		if (error.toString().indexOf('401 Unauthorized') > -1) {
+			$location.path("/login");
+			$rootScope.authenticated = false;
+
+			if (next.$$route.originalPath) {
+				$rootScope.nextLoadedTemplateUrl = next.$$route.originalPath;
+			}
+		}
+	});
+
+} ]);

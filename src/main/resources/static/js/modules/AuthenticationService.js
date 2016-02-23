@@ -73,6 +73,7 @@
 									$http.post('/logout', {}).then(function() {
 										console.info('Logged out.');
 										$rootScope.authenticated = false;
+										$location.path('/login');
 									});
 								};
 
