@@ -14,17 +14,24 @@
 									});
 						};
 
-						var findAll = function(callback) {
+						var findAll = function(callback, parameters) {
 							var headers = {};
 							if (this.sortString)
 								headers['sort'] = this.sortString;
-							
-							$http.get('/api/' + this.collection, { headers: headers }).then(
-									function(response) {
-										callback(null, response.data);
-									}, function(data) {
-										console.error(data);
-									});
+
+							if (parameters && (parameters.page || parameters.page === 0)
+									&& parameters.pageLength) {
+								headers['page'] = parameters.page;
+								headers['page-length'] = parameters.pageLength;
+							}
+
+							$http.get('/api/' + this.collection, {
+								headers : headers
+							}).then(function(response) {
+								callback(null, response.data);
+							}, function(data) {
+								console.error(data);
+							});
 						};
 
 						var findById = function(id, callback) {
@@ -40,13 +47,33 @@
 							this.sortString = propertiesArray.join();
 						};
 
+						var getNumberOfPages = function(callback, parameters) {
+							var headers = {};
+
+							if (parameters && parameters.pageLength) {
+								headers['page-length'] = parameters.pageLength;
+							} else {
+								callback('Cannot get number of pages without the pageLength parameter.');
+								return;
+							}
+
+							$http.get('/api/' + this.collection + '/numberofpages', {
+								headers : headers
+							}).then(function(response) {
+								callback(null, response.data);
+							}, function(data) {
+								console.error(data);
+							});
+						}
+
 						// Especificar o Service aqui, para ser copiado no build()
 						var self = {
 							collection : null,
 							save : save,
 							findAll : findAll,
 							findById : findById,
-							setSort : setSort
+							setSort : setSort,
+							getNumberOfPages : getNumberOfPages
 						};
 
 						return {

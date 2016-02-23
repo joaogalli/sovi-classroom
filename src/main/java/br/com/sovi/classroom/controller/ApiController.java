@@ -47,7 +47,9 @@ public class ApiController extends AbstractController {
 	@RequestMapping(value = "/*", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<String> findAll(HttpServletRequest request,
-			@RequestHeader(value = "sort", required = false) String sort) {
+			@RequestHeader(value = "sort", required = false) String sort,
+			@RequestHeader(value = "page", required = false) Integer page,
+			@RequestHeader(value = "page-length", required = false) Integer pageLength) {
 		logger.debug("Find All");
 
 		Document sortDocument = new Document();
@@ -71,6 +73,11 @@ public class ApiController extends AbstractController {
 
 		FindIterable<Document> iterable = collection.find().sort(sortDocument);
 
+		if (page != null && pageLength != null) {
+			logger.info("paginating: " + page + " - " + pageLength);
+			iterable = iterable.skip(page * pageLength).limit(pageLength);
+		}
+
 		List<Document> documents = new ArrayList<Document>();
 		for (Document document : iterable) {
 			document.append("id", document.get("_id").toString());
@@ -78,6 +85,28 @@ public class ApiController extends AbstractController {
 		}
 
 		return new ResponseEntity<String>(JsonUtils.toJson(documents), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/*/numberofpages", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<String> findAll(HttpServletRequest request,
+			@RequestHeader(value = "page-length", required = false) Integer pageLength) {
+		logger.debug("Find All");
+
+		String collectionName = getCollectionName(request);
+		MongoCollection<Document> collection = db.getCollection(collectionName);
+
+		int numberOfPages = 1;
+
+		if (pageLength > 0) {
+			long count = collection.count(new Document());
+			numberOfPages = (int) Math.ceil(((double) count) / pageLength);
+		}
+
+		if (numberOfPages <= 0)
+			numberOfPages = 1;
+
+		return new ResponseEntity<String>("{ \"numberOfPages\": " + numberOfPages + " }", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/*/{id}", method = RequestMethod.GET)

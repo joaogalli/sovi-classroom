@@ -10,8 +10,7 @@
 
 <div ng-show="!isConsult" class="well bs-component">
 
-	<form class="form-horizontal" name="beanForm"
-		novalidate>
+	<form class="form-horizontal" name="beanForm" novalidate>
 		<fieldset>
 			<div class="form-group"
 				ng-class="{ 'has-error': beanForm.name.$touched && beanForm.name.$invalid }">
@@ -27,8 +26,8 @@
 				</div>
 			</div>
 
-			<button class="btn btn-success"
-				ng-click="saveForm(beanForm.$valid)" ng-disabled="beanForm.$invalid">Salvar</button>
+			<button class="btn btn-success" ng-click="saveForm(beanForm.$valid)"
+				ng-disabled="beanForm.$invalid">Salvar</button>
 
 			<button class="btn btn-link" ng-click="cancelForm()">Cancelar</button>
 		</fieldset>
@@ -44,10 +43,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr style="cursor: pointer" ng-repeat="bean in beans | orderBy: 'name'" ng-click="$parent.createOrEditBean(bean.id)">
+			<tr style="cursor: pointer"
+				ng-repeat="bean in beans | orderBy: 'name'"
+				ng-click="$parent.createOrEditBean(bean.id)">
 				<td>{{bean.name}}</td>
 			</tr>
 		</tbody>
 	</table>
-
+	
+	<ul class="pagination">
+		<li ng-class="{ 'disabled' : hasPreviousPage }"><a ng-click="previousPage()">&laquo;</a></li>
+		<li ng-class="{ 'active' : page === $index }"
+			ng-repeat="p in numberOfPages track by $index"><a
+			ng-click="$parent.goPage($index);">{{$index}}</a></li>
+		<li ng-class="{ 'disabled' : hasNextPage }"><a ng-click="nextPage()">&raquo;</a></li>
+	</ul>
 </div>

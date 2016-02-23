@@ -1,6 +1,6 @@
 (function() {
 	var app = angular.module('ApiCrud', []);
-	
+
 	// CrudController
 	app.factory('ApiCrudController', [ function() {
 
@@ -22,14 +22,33 @@
 		}
 
 		var update = function() {
-			this.beans = [];
 			var self = this;
+
+			this.apiService.getNumberOfPages(function(error, data) {
+				if (error) {
+					console.error(error);
+				} else {
+					self.numberOfPages = new Array(data.numberOfPages);
+
+					self.hasPreviousPage = !(self.page > 0);
+					self.hasNextPage = !(self.page + 1 < self.numberOfPages.length);
+				}
+			}, {
+				pageLength : this.pageLength
+			});
+
 			this.apiService.findAll(function(error, data) {
 				if (error) {
-					console.error("Não foi possível recuperar.");
-				} else
+					console.error("Não foi possível findAll.");
+					self.beans = [];
+				} else {
 					self.beans = data;
+				}
+			}, {
+				page : this.page,
+				pageLength : this.pageLength
 			});
+
 			this.showConsult();
 		};
 
@@ -68,12 +87,36 @@
 			this.showConsult();
 		}
 
+		var goPage = function(page) {
+			if (page >= 0 && page <= this.pageLength) {
+				this.page = page;
+				this.update();
+			}
+		}
+
+		var nextPage = function() {
+			this.goPage(this.page + 1);
+		}
+
+		var previousPage = function() {
+			this.goPage(this.page - 1);
+		}
+
+		var setPageLength = function(pageLength) {
+			this.pageLength = pageLength;
+		}
+
+		this.numberOfPages = [];
 		this.isConsult = true;
 
 		var self = {
 			isConsult : this.isConsult,
 			form : this.form,
 			beans : this.beans,
+			page : this.page,
+			numberOfPages : this.numberOfPages,
+			hasNextPage : this.hasNextPage,
+			hasPreviousPage : this.hasPreviousPage,
 			getApiService : getApiService,
 			setApiService : setApiService,
 			showConsult : showConsult,
@@ -81,14 +124,18 @@
 			update : update,
 			createOrEditBean : createOrEditBean,
 			saveForm : saveForm,
-			cancelForm : cancelForm
+			cancelForm : cancelForm,
+			goPage : goPage,
+			nextPage : nextPage,
+			previousPage : previousPage,
+			setPageLength : setPageLength
 		};
-		
+
 		return {
-			build: function(service) {
+			build : function(service) {
 				angular.extend(service, self);
 			}
 		};
-		
+
 	} ]);
 }());

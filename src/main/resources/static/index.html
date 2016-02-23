@@ -88,14 +88,13 @@
 			<!-- /.container-fluid -->
 		</nav>
 
-		<ul class="nav nav-pills" ng-controller="MenuController" ng-show="isAuthenticated">
-			<li ng-repeat="pill in pills" ng-class="{ 'active' : location === pill.url }"><a href="#{{pill.url}}">{{pill.name}}</a></li>
-<!-- 			<li ng-class="{ 'active' : pill === '/dashboard' }"><a href="#dashboard">Dashboard</a></li>
-			<li ng-class="{ 'active' : pill === '/courses' }"><a href="#courses">Cursos</a></li>
-			<li ng-class="{ 'active' : pill === '/calendario' }"><a href="#calendario">Calendário</a></li>
-			<li ng-class="{ 'active' : pill === '/alunos' }"><a href="#alunos">Alunos</a></li>
-			<li ng-class="{ 'active' : pill === '/professores' }"><a href="#professores">Professores</a></li>
- -->		</ul>
+		<!-- Navigation Pills -->
+		<ul class="nav nav-pills" ng-controller="MenuController"
+			ng-show="isAuthenticated">
+			<li ng-repeat="pill in pills"
+				ng-class="{ 'active' : location === pill.url }"><a
+				href="#{{pill.url}}">{{pill.name}}</a></li>
+		</ul>
 
 		<div ng-view></div>
 	</div>

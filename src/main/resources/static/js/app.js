@@ -161,8 +161,10 @@ app.controller('CourseController', [ '$scope', 'CourseService',
 		'StudentService', 'ApiCrudController',
 		function($scope, CourseService, StudentService, ApiCrudController) {
 			ApiCrudController.build($scope);
+			CourseService.setSort(["name"]);
 			$scope.setApiService(CourseService);
-			$scope.update();
+			$scope.setPageLength(2);
+			$scope.goPage(0);
 		} ]);
 
 app.controller('StudentController', [ '$scope', 'StudentService',
