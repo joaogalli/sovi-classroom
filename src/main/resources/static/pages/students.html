@@ -65,5 +65,13 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<ul class="pagination">
+		<li ng-class="{ 'disabled' : hasPreviousPage }"><a ng-click="previousPage()">&laquo;</a></li>
+		<li ng-class="{ 'active' : page === $index }"
+			ng-repeat="p in numberOfPages track by $index"><a
+			ng-click="$parent.goPage($index);">{{$index}}</a></li>
+		<li ng-class="{ 'disabled' : hasNextPage }"><a ng-click="nextPage()">&raquo;</a></li>
+	</ul>
 
 </div>

@@ -39,7 +39,7 @@
 
 			this.apiService.findAll(function(error, data) {
 				if (error) {
-					console.error("Não foi possível findAll.");
+					console.error("Não foi possível findAll.", error);
 					self.beans = [];
 				} else {
 					self.beans = data;

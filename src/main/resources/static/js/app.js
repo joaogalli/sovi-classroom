@@ -163,7 +163,7 @@ app.controller('CourseController', [ '$scope', 'CourseService',
 			ApiCrudController.build($scope);
 			CourseService.setSort(["name"]);
 			$scope.setApiService(CourseService);
-			$scope.setPageLength(2);
+			$scope.setPageLength(10);
 			$scope.goPage(0);
 		} ]);
 
@@ -172,5 +172,6 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			ApiCrudController.build($scope);
 			StudentService.setSort(["name"]);
 			$scope.setApiService(StudentService);
-			$scope.update();
+			$scope.setPageLength(10);
+			$scope.goPage(0);
 		} ]);
