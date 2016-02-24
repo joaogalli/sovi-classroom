@@ -124,6 +124,41 @@ public class ApiController extends AbstractController {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 	}
 
+	@RequestMapping(value = "/*/{id}/add/{path}", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> add(@PathVariable("id") String id, @PathVariable("path") String path,
+			HttpServletRequest request, @RequestBody String requestBody) {
+		String collectionName = getCollectionName(request);
+		MongoCollection<Document> collection = db.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(id)));
+		Document document = iterable.first();
+
+		if (document != null) {
+			Document newDocument = Document.parse(requestBody);
+			Object pathObject = document.get(path);
+			
+			// Por padrão ele cria um array para novos objetos
+			if (pathObject == null) {
+				ArrayList arrayList = new ArrayList();
+				arrayList.add(newDocument);
+				document.append(path, arrayList);
+			}
+			else if (pathObject instanceof ArrayList) {
+				((ArrayList) pathObject).add(newDocument);
+			}
+			else {
+				document.append(path, newDocument);
+			}
+			
+			collection.replaceOne(new Document("_id", document.get("_id")), document);
+
+			document.append("id", document.get("_id").toString());
+			return new ResponseEntity<String>(document.toJson(), HttpStatus.OK);
+		}
+		else
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+	}
+
 	@RequestMapping(value = "/*", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
