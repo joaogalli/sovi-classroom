@@ -162,6 +162,8 @@ public class ApiController extends AbstractController {
 	@RequestMapping(value = "/*", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
+		logger.debug("Saving api document");
+		
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 		Document document = Document.parse(requestBody);

@@ -1,6 +1,6 @@
 var app = angular.module('app', [ 'ngRoute', 'ngMessages',
-		'pascalprecht.translate', 'UserRegister', 'Authentication', 'Api',
-		'Parameter', 'ApiCrud' ]);
+		'pascalprecht.translate', 'ui.bootstrap', 'UserRegister', 'Authentication',
+		'Api', 'Parameter', 'ApiCrud' ]);
 
 app.config([
 		'$translateProvider',
@@ -169,6 +169,47 @@ app.controller('CourseController', [ '$scope', 'CourseService',
 			$scope.setApiService(CourseService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
+
+			// Subject
+			$scope.subjectForm = {};
+			$scope.subjectBeans = [];
+
+			$scope.addSubject = function(isValid) {
+				console.log(isValid);
+				if (isValid) {
+					if (!this.form.subjects)
+						this.form.subjects = [];
+					this.form.subjects.push(this.subjectForm);
+					cleanSubjectForm();
+				}
+			};
+
+			function cleanSubjectForm() {
+				$scope.subjectForm = {};
+				$scope.isSubjectNew = true;
+			}
+
+			$scope.editSubject = function(subject) {
+				$scope.isSubjectNew = false;
+
+				if (subject) {
+					$scope.oldSubject = angular.copy(subject);
+					$scope.subjectForm = subject;
+				}
+			}
+
+			$scope.saveSubject = function(isValid) {
+				if (isValid)
+					cleanSubjectForm();
+			};
+
+			$scope.cancelSubject = function() {
+				$scope.subjectForm.name = $scope.oldSubject.name;
+				cleanSubjectForm();
+			}
+
+			cleanSubjectForm();
+
 		} ]);
 
 app.controller('StudentController', [ '$scope', 'StudentService',

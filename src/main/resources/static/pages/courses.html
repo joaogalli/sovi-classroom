@@ -1,17 +1,16 @@
-<!-- <h2>
-	Cursos 
-</h2>
- -->
 <hr />
+<div class="btn-toolbar">
 <button class="btn btn-info btn-sm" ng-click="createOrEditBean()">Novo
 	Curso</button>
 <button class="btn btn-info btn-sm" ng-click="update()">Atualizar</button>
+</div>
 <hr />
 
 <div ng-show="!isConsult" class="well bs-component">
 
 	<form class="form-horizontal" name="beanForm" novalidate>
 		<fieldset>
+			<ng-form name="mainForm">
 			<div class="form-group"
 				ng-class="{ 'has-error': beanForm.name.$touched && beanForm.name.$invalid }">
 				<label class="col-lg-2 control-label">Nome do Curso</label>
@@ -25,9 +24,59 @@
 					<p ng-message="required">Preencha o nome do curso.</p>
 				</div>
 			</div>
+			</ng-form>
 
-			<button class="btn btn-success" ng-click="saveForm(beanForm.$valid)"
-				ng-disabled="beanForm.$invalid">Salvar</button>
+
+			<div class="form-group" style="padding: 10px" ng-show="form.id">
+				<uib-tabset> <uib-tab heading="Matérias">
+				<div style="padding-top: 10px">
+					<div class="form-group">
+						<label class="col-xs-2 control-label">Nome da Matéria</label>
+						<div class="col-xs-4">
+							<input type="text" name="subjectName" ng-model="subjectForm.name"
+								class="form-control" ng-required="form.id">
+						</div>
+
+						<div class="col-xs-6">
+							<button class="btn btn-primary" ng-show="isSubjectNew"
+								ng-click="addSubject(beanForm.subjectName.$valid)"
+								ng-disabled="beanForm.subjectName.$invalid">Adicionar</button>
+							<button class="btn btn-primary" ng-hide="isSubjectNew"
+								ng-click="saveSubject(beanForm.subjectName.$valid)"
+								ng-disabled="beanForm.subjectName.$invalid">Salvar</button>
+							<button class="btn btn-link" ng-hide="isSubjectNew"
+								ng-click="cancelSubject()"
+								ng-disabled="beanForm.subjectName.$invalid">Cancelar</button>
+						</div>
+					</div>
+					<br />
+
+					<div>
+						<table class="table table-striped table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>Nome da Matéria</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr style="cursor: pointer"
+									ng-repeat="bean in form.subjects | orderBy: 'name'"
+									ng-click="$parent.editSubject(bean)">
+									<td>{{bean.name}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+
+				</div>
+				</uib-tab> </uib-tabset>
+			</div>
+			<br />
+
+			<button class="btn btn-primary" ng-click="saveForm(mainForm.$valid)"
+				ng-disabled="mainForm.$invalid">Salvar</button>
+
 
 			<button class="btn btn-link" ng-click="cancelForm()">Cancelar</button>
 		</fieldset>
@@ -36,7 +85,7 @@
 </div>
 
 <div ng-show="isConsult">
-	<table class="table table-striped table-hover ">
+	<table class="table table-striped table-hover table-bordered">
 		<thead>
 			<tr>
 				<th>Nome</th>
@@ -50,12 +99,14 @@
 			</tr>
 		</tbody>
 	</table>
-	
+
 	<ul class="pagination">
-		<li ng-class="{ 'disabled' : hasPreviousPage }"><a ng-click="previousPage()">&laquo;</a></li>
+		<li ng-class="{ 'disabled' : hasPreviousPage }"><a
+			ng-click="previousPage()">&laquo;</a></li>
 		<li ng-class="{ 'active' : page === $index }"
 			ng-repeat="p in numberOfPages track by $index"><a
 			ng-click="$parent.goPage($index);">{{$index}}</a></li>
-		<li ng-class="{ 'disabled' : hasNextPage }"><a ng-click="nextPage()">&raquo;</a></li>
+		<li ng-class="{ 'disabled' : hasNextPage }"><a
+			ng-click="nextPage()">&raquo;</a></li>
 	</ul>
 </div>

@@ -6,7 +6,7 @@
 					function($http) {
 
 						var save = function(document, callback) {
-							$http.post('/api/' + this.collection, JSON.stringify(document))
+							$http.post('/api/' + this.collection, angular.toJson(document))
 									.then(function(response) {
 										callback(null, response.data);
 									}, function(data) {
