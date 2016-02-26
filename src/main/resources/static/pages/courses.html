@@ -60,7 +60,7 @@
 							<tbody>
 								<tr style="cursor: pointer"
 									ng-repeat="bean in subject.beans | orderBy: 'name'"
-									ng-click="$parent.createOrEditBean(bean.id)">
+									ng-click="$parent.subject.createOrEditBean(bean.id)">
 									<td>{{bean.name}}</td>
 								</tr>
 							</tbody>

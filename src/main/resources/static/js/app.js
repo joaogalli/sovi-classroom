@@ -165,42 +165,52 @@ app.controller('LoginController', [
 
 		} ]);
 
-app.controller('CourseController',
-		[
-				'$scope',
-				'CourseService',
-				'SubjectService',
-				'StudentService',
-				'ApiCrudController',
-				function($scope, CourseService, SubjectService, StudentService,
-						ApiCrudController) {
-					ApiCrudController.build($scope);
-					CourseService.setSort([ "name" ]);
-					$scope.setApiService(CourseService);
-					$scope.setPageLength(10);
-					$scope.goPage(0);
-					
-					$scope.subject = {};
-					ApiCrudController.build($scope.subject);
-					SubjectService.setSort([ "name" ]);
-					$scope.subject.setApiService(SubjectService);
-					$scope.subject.setPageLength(10);
-					$scope.subject.goPage(0);
-					$scope.subject['preSaveForm'] = function(bean) {
-						console.info('preSaveForm', bean);
-						console.info('preSaveForm', $scope.form.id);
-						bean['courseId'] = $scope.form.id;
-					};
-					
-					$scope.$watch('form', function(newValue) {
-						if (newValue && newValue.id) {
-							$scope.subject.query = { "courseId": newValue.id};
-							$scope.subject.goPage(0);
-						}
-					});
-					
+app.controller('CourseController', [
+		'$scope',
+		'CourseService',
+		'SubjectService',
+		'StudentService',
+		'ApiCrudController',
+		function($scope, CourseService, SubjectService, StudentService,
+				ApiCrudController) {
+			ApiCrudController.build($scope);
+			CourseService.setSort([ "name" ]);
+			$scope.setApiService(CourseService);
+			$scope.setPageLength(10);
+			$scope.goPage(0);
+			$scope['afterSaveForm'] = function(savedBean) {
+				console.info('afterSaveForm', $scope.form);
+				console.info('afterSaveForm', savedBean);
+				if ($scope.form.id) {
+					$scope.form = {};
+					$scope.showConsult(true);
+				} else {
+					$scope.form = savedBean;
+				}
+			}
 
-				} ]);
+			$scope.subject = {};
+			ApiCrudController.build($scope.subject);
+			SubjectService.setSort([ "name" ]);
+			$scope.subject.setApiService(SubjectService);
+			$scope.subject.setPageLength(10);
+			$scope.subject.goPage(0);
+			$scope.subject['preSaveForm'] = function(bean) {
+				if (bean) {
+					bean['courseId'] = $scope.form.id;
+				}
+			};
+
+			$scope.$watch('form', function(newValue) {
+				if (newValue && newValue.id) {
+					$scope.subject.query = {
+						"courseId" : newValue.id
+					};
+					$scope.subject.goPage(0);
+				}
+			});
+
+		} ]);
 
 app.controller('StudentController', [ '$scope', 'StudentService',
 		'ApiCrudController', function($scope, StudentService, ApiCrudController) {

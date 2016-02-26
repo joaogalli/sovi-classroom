@@ -84,8 +84,7 @@
 				if (error) {
 					console.error(error);
 				} else {
-					self.form = {};
-					self.showConsult(true);
+					self.afterSaveForm(data);
 				}
 			});
 		};
@@ -93,6 +92,11 @@
 		var preSaveForm = function(bean) {
 		};
 
+		var afterSaveForm = function(savedBean) {
+			this.form = {};
+			this.showConsult(true);
+		}
+		
 		var cancelForm = function() {
 			this.form = {};
 			this.showConsult();
@@ -134,7 +138,9 @@
 			showForm : showForm,
 			update : update,
 			createOrEditBean : createOrEditBean,
+			preSaveForm: preSaveForm,
 			saveForm : saveForm,
+			afterSaveForm : afterSaveForm,
 			cancelForm : cancelForm,
 			goPage : goPage,
 			nextPage : nextPage,

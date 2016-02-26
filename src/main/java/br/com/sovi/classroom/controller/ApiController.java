@@ -183,7 +183,7 @@ public class ApiController extends AbstractController {
 	@RequestMapping(value = "/*", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
-		logger.debug("Saving api document");
+		logger.debug("Saving api document: " + requestBody);
 
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
@@ -198,6 +198,8 @@ public class ApiController extends AbstractController {
 		else
 			collection.insertOne(document);
 
+		document.append("id", document.get("_id").toString());
+		
 		return new ResponseEntity<String>(JsonUtils.toJson(document), HttpStatus.OK);
 	}
 
