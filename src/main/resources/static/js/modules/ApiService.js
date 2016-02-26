@@ -34,6 +34,26 @@
 							});
 						};
 
+						var findQuery = function(query, callback, parameters) {
+							var headers = {};
+							if (this.sortString)
+								headers['sort'] = this.sortString;
+
+							if (parameters && (parameters.page || parameters.page === 0)
+									&& parameters.pageLength) {
+								headers['page'] = parameters.page;
+								headers['page-length'] = parameters.pageLength;
+							}
+
+							$http.post('/api/' + this.collection + "/query", query, {
+								headers : headers
+							}).then(function(response) {
+								callback(null, response.data);
+							}, function(data) {
+								console.error(data);
+							});
+						};
+
 						var findById = function(id, callback) {
 							$http.get('/api/' + this.collection + "/" + id).then(
 									function(response) {
@@ -71,6 +91,7 @@
 							collection : null,
 							save : save,
 							findAll : findAll,
+							findQuery : findQuery,
 							findById : findById,
 							setSort : setSort,
 							getNumberOfPages : getNumberOfPages

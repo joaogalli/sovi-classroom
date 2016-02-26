@@ -1,8 +1,8 @@
 <hr />
 <div class="btn-toolbar">
-<button class="btn btn-info btn-sm" ng-click="createOrEditBean()">Novo
-	Curso</button>
-<button class="btn btn-info btn-sm" ng-click="update()">Atualizar</button>
+	<button class="btn btn-info btn-sm" ng-click="createOrEditBean()">Novo
+		Curso</button>
+	<button class="btn btn-info btn-sm" ng-click="update()">Atualizar</button>
 </div>
 <hr />
 
@@ -30,28 +30,27 @@
 			<div class="form-group" style="padding: 10px" ng-show="form.id">
 				<uib-tabset> <uib-tab heading="Matérias">
 				<div style="padding-top: 10px">
-					<div class="form-group">
+					<div class="form-group" ng-hide="subject.isConsult">
 						<label class="col-xs-2 control-label">Nome da Matéria</label>
 						<div class="col-xs-4">
-							<input type="text" name="subjectName" ng-model="subjectForm.name"
-								class="form-control" ng-required="form.id">
+							<input type="text" name="subjectName"
+								ng-model="subject.form.name" class="form-control"
+								ng-required="form.id">
 						</div>
 
 						<div class="col-xs-6">
-							<button class="btn btn-primary" ng-show="isSubjectNew"
-								ng-click="addSubject(beanForm.subjectName.$valid)"
-								ng-disabled="beanForm.subjectName.$invalid">Adicionar</button>
-							<button class="btn btn-primary" ng-hide="isSubjectNew"
-								ng-click="saveSubject(beanForm.subjectName.$valid)"
+							<button class="btn btn-primary"
+								ng-click="subject.saveForm(beanForm.subjectName.$valid)"
 								ng-disabled="beanForm.subjectName.$invalid">Salvar</button>
-							<button class="btn btn-link" ng-hide="isSubjectNew"
-								ng-click="cancelSubject()"
-								ng-disabled="beanForm.subjectName.$invalid">Cancelar</button>
+							<button class="btn btn-link" ng-click="subject.cancelForm()">Cancelar</button>
 						</div>
 					</div>
-					<br />
 
-					<div>
+					<div ng-show="subject.isConsult">
+						<div class="btn-toolbar">
+							<button class="btn btn-link btn-sm"
+								ng-click="subject.createOrEditBean()">Nova Matéria</button>
+						</div>
 						<table class="table table-striped table-hover table-bordered">
 							<thead>
 								<tr>
@@ -60,8 +59,8 @@
 							</thead>
 							<tbody>
 								<tr style="cursor: pointer"
-									ng-repeat="bean in form.subjects | orderBy: 'name'"
-									ng-click="$parent.editSubject(bean)">
+									ng-repeat="bean in subject.beans | orderBy: 'name'"
+									ng-click="$parent.createOrEditBean(bean.id)">
 									<td>{{bean.name}}</td>
 								</tr>
 							</tbody>

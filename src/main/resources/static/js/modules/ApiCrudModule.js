@@ -37,17 +37,24 @@
 				pageLength : this.pageLength
 			});
 
-			this.apiService.findAll(function(error, data) {
+			var callback = function(error, data) {
 				if (error) {
 					console.error("Não foi possível findAll.", error);
 					self.beans = [];
 				} else {
 					self.beans = data;
 				}
-			}, {
+			};
+
+			var parameters = {
 				page : this.page,
 				pageLength : this.pageLength
-			});
+			};
+
+			if (this.query)
+				this.apiService.findQuery(this.query, callback, parameters);
+			else
+				this.apiService.findAll(callback, parameters);
 
 			this.showConsult();
 		};
@@ -72,6 +79,7 @@
 
 		var saveForm = function(isValid) {
 			var self = this;
+			this.preSaveForm(this.form);
 			this.apiService.save(this.form, function(error, data) {
 				if (error) {
 					console.error(error);
@@ -80,6 +88,9 @@
 					self.showConsult(true);
 				}
 			});
+		};
+
+		var preSaveForm = function(bean) {
 		};
 
 		var cancelForm = function() {

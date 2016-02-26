@@ -52,6 +52,10 @@ app.factory('CourseService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('courses');
 } ]);
 
+app.factory('SubjectService', [ 'ApiService', function(ApiService) {
+	return ApiService.build('subjects');
+} ]);
+
 app.factory('StudentService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('students');
 } ]);
@@ -161,56 +165,42 @@ app.controller('LoginController', [
 
 		} ]);
 
-app.controller('CourseController', [ '$scope', 'CourseService',
-		'StudentService', 'ApiCrudController',
-		function($scope, CourseService, StudentService, ApiCrudController) {
-			ApiCrudController.build($scope);
-			CourseService.setSort([ "name" ]);
-			$scope.setApiService(CourseService);
-			$scope.setPageLength(10);
-			$scope.goPage(0);
+app.controller('CourseController',
+		[
+				'$scope',
+				'CourseService',
+				'SubjectService',
+				'StudentService',
+				'ApiCrudController',
+				function($scope, CourseService, SubjectService, StudentService,
+						ApiCrudController) {
+					ApiCrudController.build($scope);
+					CourseService.setSort([ "name" ]);
+					$scope.setApiService(CourseService);
+					$scope.setPageLength(10);
+					$scope.goPage(0);
+					
+					$scope.subject = {};
+					ApiCrudController.build($scope.subject);
+					SubjectService.setSort([ "name" ]);
+					$scope.subject.setApiService(SubjectService);
+					$scope.subject.setPageLength(10);
+					$scope.subject.goPage(0);
+					$scope.subject['preSaveForm'] = function(bean) {
+						console.info('preSaveForm', bean);
+						console.info('preSaveForm', $scope.form.id);
+						bean['courseId'] = $scope.form.id;
+					};
+					
+					$scope.$watch('form', function(newValue) {
+						if (newValue && newValue.id) {
+							$scope.subject.query = { "courseId": newValue.id};
+							$scope.subject.goPage(0);
+						}
+					});
+					
 
-			// Subject
-			$scope.subjectForm = {};
-			$scope.subjectBeans = [];
-
-			$scope.addSubject = function(isValid) {
-				console.log(isValid);
-				if (isValid) {
-					if (!this.form.subjects)
-						this.form.subjects = [];
-					this.form.subjects.push(this.subjectForm);
-					cleanSubjectForm();
-				}
-			};
-
-			function cleanSubjectForm() {
-				$scope.subjectForm = {};
-				$scope.isSubjectNew = true;
-			}
-
-			$scope.editSubject = function(subject) {
-				$scope.isSubjectNew = false;
-
-				if (subject) {
-					$scope.oldSubject = angular.copy(subject);
-					$scope.subjectForm = subject;
-				}
-			}
-
-			$scope.saveSubject = function(isValid) {
-				if (isValid)
-					cleanSubjectForm();
-			};
-
-			$scope.cancelSubject = function() {
-				$scope.subjectForm.name = $scope.oldSubject.name;
-				cleanSubjectForm();
-			}
-
-			cleanSubjectForm();
-
-		} ]);
+				} ]);
 
 app.controller('StudentController', [ '$scope', 'StudentService',
 		'ApiCrudController', function($scope, StudentService, ApiCrudController) {

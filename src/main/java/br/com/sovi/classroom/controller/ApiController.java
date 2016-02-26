@@ -52,6 +52,27 @@ public class ApiController extends AbstractController {
 			@RequestHeader(value = "page-length", required = false) Integer pageLength) {
 		logger.debug("Find All");
 
+		return find(null, request, sort, page, pageLength);
+	}
+
+	@RequestMapping(value = "/*/query", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> findQuery(HttpServletRequest request, @RequestBody String requestBody,
+			@RequestHeader(value = "sort", required = false) String sort,
+			@RequestHeader(value = "page", required = false) Integer page,
+			@RequestHeader(value = "page-length", required = false) Integer pageLength) {
+		logger.debug("Find query");
+
+		logger.info(requestBody);
+
+		return find(Document.parse(requestBody), request, sort, page, pageLength);
+	}
+
+	private ResponseEntity<String> find(Document query, HttpServletRequest request, String sort, Integer page,
+			Integer pageLength) {
+		if (query == null)
+			query = new Document();
+
 		Document sortDocument = new Document();
 		if (StringUtils.hasText(sort)) {
 			String[] split = sort.split(",");
@@ -71,7 +92,7 @@ public class ApiController extends AbstractController {
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 
-		FindIterable<Document> iterable = collection.find().sort(sortDocument);
+		FindIterable<Document> iterable = collection.find(query).sort(sortDocument);
 
 		if (page != null && pageLength != null) {
 			iterable = iterable.skip(page * pageLength).limit(pageLength);
@@ -136,7 +157,7 @@ public class ApiController extends AbstractController {
 		if (document != null) {
 			Document newDocument = Document.parse(requestBody);
 			Object pathObject = document.get(path);
-			
+
 			// Por padrão ele cria um array para novos objetos
 			if (pathObject == null) {
 				ArrayList arrayList = new ArrayList();
@@ -149,7 +170,7 @@ public class ApiController extends AbstractController {
 			else {
 				document.append(path, newDocument);
 			}
-			
+
 			collection.replaceOne(new Document("_id", document.get("_id")), document);
 
 			document.append("id", document.get("_id").toString());
@@ -163,7 +184,7 @@ public class ApiController extends AbstractController {
 	@ResponseBody
 	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
 		logger.debug("Saving api document");
-		
+
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 		Document document = Document.parse(requestBody);
