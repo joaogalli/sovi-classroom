@@ -56,9 +56,28 @@ app.factory('SubjectService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('subjects');
 } ]);
 
+app.factory('ModuleService', [ 'ApiService', function(ApiService) {
+	return ApiService.build('modules');
+} ]);
+
 app.factory('StudentService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('students');
 } ]);
+
+app.filter('FindSubjectById', ['SubjectService', function(SubjectService) {
+	return function (subjectId, field) {
+		var self = this;
+		SubjectService.findById(subjectId, function(error, data) {
+			if (error) {
+				self.result = "---";
+			} else {
+				self.result = data[field];
+			}
+		});
+		
+		return self.result;
+	};
+}]);
 
 app.controller('NavigationController', [ '$scope', '$rootScope',
 		'AuthenticationService',
@@ -169,18 +188,17 @@ app.controller('CourseController', [
 		'$scope',
 		'CourseService',
 		'SubjectService',
+		'ModuleService',
 		'StudentService',
 		'ApiCrudController',
-		function($scope, CourseService, SubjectService, StudentService,
-				ApiCrudController) {
+		function($scope, CourseService, SubjectService, ModuleService,
+				StudentService, ApiCrudController) {
 			ApiCrudController.build($scope);
 			CourseService.setSort([ "name" ]);
 			$scope.setApiService(CourseService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
 			$scope['afterSaveForm'] = function(savedBean) {
-				console.info('afterSaveForm', $scope.form);
-				console.info('afterSaveForm', savedBean);
 				if ($scope.form.id) {
 					$scope.form = {};
 					$scope.showConsult(true);
@@ -201,12 +219,49 @@ app.controller('CourseController', [
 				}
 			};
 
+			$scope.module = {};
+			ApiCrudController.build($scope.module);
+			SubjectService.setSort([ "name" ]);
+			$scope.module.setApiService(ModuleService);
+			$scope.module.setPageLength(10);
+			$scope.module.goPage(0);
+			$scope.module['preSaveForm'] = function(bean) {
+				if (bean) {
+					bean['courseId'] = $scope.form.id;
+				}
+			};
+
+			$scope.$watch('module.form', function(newValue) {
+				if (newValue) {
+					if (newValue.referenceDate) {
+						newValue.referenceDate = new Date(newValue.referenceDate);
+					} else {
+						newValue.referenceDate = new Date();
+					}
+
+					SubjectService.findQuery({
+						"courseId" : $scope.form.id
+					}, function(error, data) {
+						if (error) {
+							console.error('Error', error);
+						} else {
+							$scope.module.subjects = data;
+						}
+					});
+				}
+			});
+
 			$scope.$watch('form', function(newValue) {
 				if (newValue && newValue.id) {
 					$scope.subject.query = {
 						"courseId" : newValue.id
 					};
 					$scope.subject.goPage(0);
+
+					$scope.module.query = {
+						"courseId" : newValue.id
+					};
+					$scope.module.goPage(0);
 				}
 			});
 

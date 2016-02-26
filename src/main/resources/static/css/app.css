@@ -1,12 +1,24 @@
-
 .tab-content {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    padding: 10px;
-    background-color: #FFF;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	padding: 10px;
+	background-color: #FFF;
 }
 
 .nav-tabs {
-    margin-bottom: -1;
+	margin-bottom: -1;
 }
 
+.view-header {
+	
+}
+
+.view-header .title {
+	display: inline;
+	vertical-align: middle;
+}
+
+.view-header .button-bar {
+	display: inline;
+	margin-left: 20px;
+}

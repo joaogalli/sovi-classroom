@@ -32,6 +32,10 @@
 [ng\:cloak], [ng-cloak], .ng-cloak {
 	display: none !important;
 }
+
+label {
+	font-weight: bold;
+}
 </style>
 </head>
 
@@ -55,6 +59,11 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-left">
+						<li ng-show="isAuthenticated"><a href="#/courses">Cursos</a></li>
+						<li ng-show="isAuthenticated"><a href="#/students">Alunos</a></li>
+					</ul>
+					
 					<ul class="nav navbar-nav navbar-right">
 						<li ng-hide="isAuthenticated"><a href="#/login">Entrar</a></li>
 						<li ng-hide="isAuthenticated"><a href="#/register">Registrar-se</a>
@@ -83,12 +92,12 @@
 		</nav>
 
 		<!-- Navigation Pills -->
-		<ul class="nav nav-pills" ng-controller="MenuController"
+		<!-- <ul class="nav nav-pills" ng-controller="MenuController"
 			ng-show="isAuthenticated">
 			<li ng-repeat="pill in pills"
 				ng-class="{ 'active' : location === pill.url }"><a
 				href="#{{pill.url}}">{{pill.name}}</a></li>
-		</ul>
+		</ul> -->
 
 		<div ng-view></div>
 	</div>

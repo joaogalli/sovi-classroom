@@ -1,10 +1,13 @@
-<hr />
-<div class="btn-toolbar">
-	<button class="btn btn-info btn-sm" ng-click="createOrEditBean()">Novo
-		Curso</button>
-	<button class="btn btn-info btn-sm" ng-click="update()">Atualizar</button>
+<div class="panel panel-danger">
+	<div class="panel-body view-header">
+ 		<h2 class="title">Cursos</h2>
+		<div class="button-bar">
+			<button class="btn btn-default btn-sm" ng-click="createOrEditBean()">Novo
+				Curso</button>
+			<button class="btn btn-link btn-sm" ng-click="update()">Atualizar</button>
+		</div>
+	</div>
 </div>
-<hr />
 
 <div ng-show="!isConsult" class="well bs-component">
 
@@ -26,7 +29,6 @@
 			</div>
 			</ng-form>
 
-
 			<div class="form-group" style="padding: 10px" ng-show="form.id">
 				<uib-tabset> <uib-tab heading="Matérias">
 				<div style="padding-top: 10px">
@@ -41,7 +43,8 @@
 						<div class="col-xs-6">
 							<button class="btn btn-primary"
 								ng-click="subject.saveForm(beanForm.subjectName.$valid)"
-								ng-disabled="beanForm.subjectName.$invalid">Salvar</button>
+								ng-disabled="beanForm.subjectName.$invalid">Salvar
+								Matéria</button>
 							<button class="btn btn-link" ng-click="subject.cancelForm()">Cancelar</button>
 						</div>
 					</div>
@@ -67,6 +70,76 @@
 						</table>
 					</div>
 
+
+				</div>
+				</uib-tab> <!-- Modulos --> <uib-tab heading="Módulos">
+				<div style="padding-top: 10px">
+					<div ng-hide="module.isConsult">
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Nome do Módulo</label>
+							<div class="col-xs-4">
+								<input type="text" name="moduleName" ng-model="module.form.name"
+									class="form-control" ng-required="form.id">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Matéria</label>
+							<div class="col-xs-4">
+								<select ng-model="module.form.subjectId" class="form-control">
+									<option ng-repeat="bean in module.subjects" value="{{bean.id}}">{{bean.name}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Data de Referência</label>
+							<div class="col-xs-4 input-group">
+								<input type="text" class="form-control" uib-datepicker-popup
+									ng-model="module.form.referenceDate"
+									is-open="module.referenceDatePopup.opened" min-date="minDate"
+									max-date="maxDate" datepicker-options="dateOptions"
+									current-text="Hoje" clear-text="Limpar" close-text="Fechar" />
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default"
+										ng-click="module.referenceDatePopup.opened = true">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+
+						<div class="col-xs-6">
+							<button class="btn btn-primary"
+								ng-click="module.saveForm(beanForm.moduleName.$valid)"
+								ng-disabled="beanForm.moduleName.$invalid">Salvar
+								Módulo</button>
+							<button class="btn btn-link" ng-click="module.cancelForm()">Cancelar</button>
+						</div>
+					</div>
+
+					<div ng-show="module.isConsult">
+						<div class="btn-toolbar">
+							<button class="btn btn-link btn-sm"
+								ng-click="module.createOrEditBean()">Novo Módulo</button>
+						</div>
+						<table class="table table-striped table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>Nome do Módulo</th>
+									<th>Matéria</th>
+									<th>Data de Referência</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr style="cursor: pointer"
+									ng-repeat="bean in module.beans | orderBy: 'name'"
+									ng-click="$parent.module.createOrEditBean(bean.id)">
+									<td>{{bean.name}}</td>
+									<td>{{bean.subjectId | FindSubjectById : 'name'}}</td>
+									<td>{{bean.referenceDate | date : 'dd/MM/yyyy'}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
 				</div>
 				</uib-tab> </uib-tabset>
