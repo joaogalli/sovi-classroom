@@ -64,8 +64,8 @@ app.factory('StudentService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('students');
 } ]);
 
-app.filter('FindSubjectById', ['SubjectService', function(SubjectService) {
-	return function (subjectId, field) {
+app.filter('FindSubjectById', [ 'SubjectService', function(SubjectService) {
+	return function(subjectId, field) {
 		var self = this;
 		SubjectService.findById(subjectId, function(error, data) {
 			if (error) {
@@ -74,10 +74,10 @@ app.filter('FindSubjectById', ['SubjectService', function(SubjectService) {
 				self.result = data[field];
 			}
 		});
-		
+
 		return self.result;
 	};
-}]);
+} ]);
 
 app.controller('NavigationController', [ '$scope', '$rootScope',
 		'AuthenticationService',
@@ -89,35 +89,6 @@ app.controller('NavigationController', [ '$scope', '$rootScope',
 			$rootScope.$watch('authenticated', function(newValue) {
 				$scope.isAuthenticated = newValue;
 			});
-		} ]);
-
-app.controller('MenuController', [ '$scope', '$rootScope', '$location',
-		function($scope, $rootScope, $location) {
-			$scope.pills = [ {
-				name : "Dashboard",
-				url : "/dashboard"
-			}, {
-				name : "Cursos",
-				url : "/courses"
-			}, {
-				name : "Calendário",
-				url : "/calendar"
-			}, {
-				name : "Alunos",
-				url : "/students"
-			}, {
-				name : "Professores",
-				url : "/teachers"
-			} ];
-
-			$rootScope.$watch('authenticated', function(newValue) {
-				$scope.isAuthenticated = newValue;
-			});
-
-			$rootScope.$on('$locationChangeSuccess', function(a) {
-				$scope.location = $location.url();
-			});
-
 		} ]);
 
 app.controller('HomeController', [ '$scope', function($scope) {

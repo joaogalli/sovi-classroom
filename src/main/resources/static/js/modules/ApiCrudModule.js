@@ -55,8 +55,6 @@
 				this.apiService.findQuery(this.query, callback, parameters);
 			else
 				this.apiService.findAll(callback, parameters);
-
-			this.showConsult();
 		};
 
 		var createOrEditBean = function(beanId) {
@@ -99,7 +97,7 @@
 		
 		var cancelForm = function() {
 			this.form = {};
-			this.showConsult();
+			this.showConsult(true);
 		}
 
 		var goPage = function(page) {

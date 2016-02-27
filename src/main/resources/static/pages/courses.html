@@ -1,15 +1,18 @@
 <div class="panel panel-danger">
 	<div class="panel-body view-header">
- 		<h2 class="title">Cursos</h2>
+		<h2 class="title">Cursos</h2>
 		<div class="button-bar">
-			<button class="btn btn-default btn-sm" ng-click="createOrEditBean()">Novo
-				Curso</button>
-			<button class="btn btn-link btn-sm" ng-click="update()">Atualizar</button>
+			<button class="btn btn-default btn-sm" ng-show="isConsult"
+				ng-click="createOrEditBean()">Novo Curso</button>
+			<button class="btn btn-primary btn-sm" ng-hide="isConsult"
+				ng-click="saveForm(mainForm.$valid)" ng-disabled="mainForm.$invalid">Salvar</button>
+			<button class="btn btn-link btn-sm" ng-hide="isConsult"
+				ng-click="cancelForm()">Cancelar</button>
 		</div>
 	</div>
 </div>
 
-<div ng-show="!isConsult" class="well bs-component">
+<div ng-hide="isConsult" class="well bs-component">
 
 	<form class="form-horizontal" name="beanForm" novalidate>
 		<fieldset>
@@ -144,13 +147,6 @@
 				</div>
 				</uib-tab> </uib-tabset>
 			</div>
-			<br />
-
-			<button class="btn btn-primary" ng-click="saveForm(mainForm.$valid)"
-				ng-disabled="mainForm.$invalid">Salvar</button>
-
-
-			<button class="btn btn-link" ng-click="cancelForm()">Cancelar</button>
 		</fieldset>
 	</form>
 
