@@ -82,6 +82,10 @@ app.filter('FindSubjectById', [ 'SubjectService', function(SubjectService) {
 app.controller('NavigationController', [ '$scope', '$rootScope',
 		'AuthenticationService',
 		function($scope, $rootScope, AuthenticationService) {
+			$rootScope.$watch('authenticatedUser', function(newValue) {
+				$scope.authenticatedUser = newValue;
+			})
+
 			$scope.logout = function() {
 				AuthenticationService.logout();
 			};
