@@ -52,7 +52,6 @@ app.controller('CourseController', [
 				}
 			};
 			$scope.$watch('module.beans', function(newValue) {
-				console.info('$watch module.beans', newValue);
 				if (newValue) {
 					var bean = {};
 					for (var i = 0; i <= newValue.length; i++) {
@@ -64,7 +63,6 @@ app.controller('CourseController', [
 									if (error) {
 										console.error(error);
 									} else {
-										console.info(newValue);
 										bean.subject = data;
 									}
 								});
@@ -109,7 +107,6 @@ app.controller('CourseController', [
 				}
 			};
 			$scope.$watch('classschedulement.beans', function(newValue) {
-				console.info('$watch classschedulement.beans', newValue);
 				if (newValue) {
 					var bean = {};
 					for (var i = 0; i <= newValue.length; i++) {

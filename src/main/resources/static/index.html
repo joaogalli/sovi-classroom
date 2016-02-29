@@ -17,8 +17,16 @@
 <script src="js/ui-bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
 
 <!-- Angular Translate -->
-<script src="js/angular-translate.js"></script>
-<script src="js/angular-translate-loader-static-files.js"></script>
+<script src="js/lib/angular-translate.js"></script>
+<script src="js/lib/angular-translate-loader-static-files.js"></script>
+
+<!-- Moment -->
+<!-- <script src="js/lib/moment.js"></script> -->
+<script src="js/lib/moment-with-locales.js"></script>
+
+<!-- Calendar -->
+<script src="js/lib/angular-bootstrap-calendar-tpls.js"></script>
+<link href="css/lib/angular-bootstrap-calendar.css" rel="stylesheet">
 
 <!-- Application JS -->
 <script src="js/app.js"></script>
@@ -62,6 +70,7 @@ label {
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
+						<li ng-show="isAuthenticated"><a href="#/calendar">Calendário</a></li>
 						<li ng-show="isAuthenticated"><a href="#/courses">Cursos</a></li>
 						<li ng-show="isAuthenticated"><a href="#/students">Alunos</a></li>
 					</ul>

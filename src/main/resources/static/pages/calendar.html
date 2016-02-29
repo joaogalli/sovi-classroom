@@ -1,0 +1,42 @@
+
+<div class="row">
+
+	<div class="col-md-6 text-left">
+		<div class="btn-group">
+
+			<button class="btn btn-primary" mwl-date-modifier date="vm.viewDate"
+				decrement="vm.calendarView">Anterior</button>
+			<button class="btn btn-default" mwl-date-modifier date="vm.viewDate"
+				set-to-today>Hoje</button>
+			<button class="btn btn-primary" mwl-date-modifier date="vm.viewDate"
+				increment="vm.calendarView">Próximo</button>
+		</div>
+	</div>
+
+	<br class="visible-xs visible-sm">
+
+	<div class="col-md-6 text-right">
+		<div class="btn-group">
+			<label class="btn btn-primary" ng-model="vm.calendarView"
+				uib-btn-radio="'year'">Ano</label> <label class="btn btn-primary"
+				ng-model="vm.calendarView" uib-btn-radio="'month'">Mês</label> <label
+				class="btn btn-primary" ng-model="vm.calendarView"
+				uib-btn-radio="'week'">Semana</label> <label class="btn btn-primary"
+				ng-model="vm.calendarView" uib-btn-radio="'day'">Dia</label>
+		</div>
+	</div>
+
+</div>
+
+<br>
+
+<mwl-calendar events="vm.events" view="vm.calendarView"
+	view-title="vm.calendarTitle" view-date="vm.viewDate"
+	on-event-click="vm.eventClicked(calendarEvent)"
+	on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+	edit-event-html="'<i class=\'glyphicon glyphicon-pencil\'></i>'"
+	delete-event-html="'<i class=\'glyphicon glyphicon-remove\'></i>'"
+	on-edit-event-click="vm.eventEdited(calendarEvent)"
+	on-delete-event-click="vm.eventDeleted(calendarEvent)"
+	cell-is-open="vm.isCellOpen" day-view-split="30"
+	cell-modifier="vm.modifyCell(calendarCell)"> </mwl-calendar>

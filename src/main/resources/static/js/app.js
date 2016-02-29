@@ -1,6 +1,6 @@
 var app = angular.module('app', [ 'ngRoute', 'ngMessages',
-		'pascalprecht.translate', 'ui.bootstrap', 'UserRegister', 'Authentication',
-		'Api', 'Parameter', 'ApiCrud' ]);
+		'pascalprecht.translate', 'ui.bootstrap', 'mwl.calendar', 'UserRegister',
+		'Authentication', 'Api', 'Parameter', 'ApiCrud' ]);
 
 app.config([
 		'$translateProvider',
@@ -36,7 +36,10 @@ app.config([ '$routeProvider', function($routeProvider) {
 		controller : 'RegisterController'
 	})
 
-	.when('/courses', {
+	.when('/calendar', {
+		templateUrl : 'pages/calendar.html',
+		controller : 'CalendarController'
+	}).when('/courses', {
 		templateUrl : 'pages/courses.html',
 		controller : 'CourseController'
 	}).when('/students', {
@@ -47,6 +50,11 @@ app.config([ '$routeProvider', function($routeProvider) {
 	;
 
 } ]);
+
+app.config(function(calendarConfig) {
+	calendarConfig.dateFormatter = 'moment'; // use moment to format dates
+	moment.locale('pt');
+});
 
 app.factory('CourseService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('courses');
@@ -155,6 +163,70 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			$scope.setApiService(StudentService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
+		} ]);
+
+app.controller('CalendarController', [
+		'$scope',
+		'CourseService',
+		'SubjectService',
+		'ModuleService',
+		'ClassSchedulementService',
+		function($scope, CourseService, SubjectService, ModuleService,
+				ClassSchedulementService) {
+
+			$scope.vm = {};
+
+			$scope.$watch('vm.isCellOpen', function(newValue) {
+				console.info(newValue);
+			});
+
+			$scope.vm.calendarView = 'month';
+			$scope.vm.viewDate = new Date();
+
+			ClassSchedulementService.findAll(function(error, list) {
+				if (error) {
+					console.error(error);
+				} else {
+					list.forEach(function(element, index, array) {
+						SubjectService.findById(element.subjectId).then(function(response) {
+							var subject = response.data;
+
+							$scope.vm.events.push({
+								title : subject.name,
+								startsAt: new Date(element.startDate)
+							})
+						});
+					});
+				}
+			});
+
+			$scope.vm.events = [ {
+				title : 'My event title', // The title of the event
+				type : 'info', // The type of the event (determines its color). Can be
+				// important, warning, info, inverse, success or special
+				startsAt : new Date(2013, 5, 1, 1), // A javascript date object for when
+				// the event starts
+				endsAt : new Date(2014, 8, 26, 15), // Optional - a javascript date
+				// object for when the event ends
+				editable : false, // If edit-event-html is set and this field is
+				// explicitly set to false then dont make it editable.
+				deletable : false, // If delete-event-html is set and this field is
+				// explicitly set to false then dont make it
+				// deleteable
+				draggable : true, // Allow an event to be dragged and dropped
+				resizable : true, // Allow an event to be resizable
+				incrementsBadgeTotal : true, // If set to false then will not count
+				// towards the badge total amount on the
+				// month and year view
+				recursOn : 'year', // If set the event will recur on the given period.
+				// Valid values are year or month
+				cssClass : 'a-css-class-name' // A CSS class (or more, just separate
+			// with spaces) that will be added to the
+			// event when it is displayed on each
+			// view. Useful for marking an event as
+			// selected / active etc
+			} ];
+
 		} ]);
 
 app.run([ "$rootScope", "$location", function($rootScope, $location) {
