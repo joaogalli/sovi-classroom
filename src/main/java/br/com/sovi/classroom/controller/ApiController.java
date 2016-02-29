@@ -63,8 +63,6 @@ public class ApiController extends AbstractController {
 			@RequestHeader(value = "page-length", required = false) Integer pageLength) {
 		logger.debug("Find query");
 
-		logger.info(requestBody);
-
 		return find(Document.parse(requestBody), request, sort, page, pageLength);
 	}
 

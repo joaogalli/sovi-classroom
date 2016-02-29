@@ -33,7 +33,8 @@
 			</ng-form>
 
 			<div class="form-group" style="padding: 10px" ng-show="form.id">
-				<uib-tabset> <uib-tab heading="Matérias">
+				<uib-tabset> <uib-tab select="subjectTabSelected()"
+					heading="Matérias">
 				<div style="padding-top: 10px">
 					<div class="form-group" ng-hide="subject.isConsult">
 						<label class="col-xs-2 control-label">Nome da Matéria</label>
@@ -75,7 +76,8 @@
 
 
 				</div>
-				</uib-tab> <!-- Modulos --> <uib-tab heading="Módulos">
+				</uib-tab> <!-- Modulos --> <uib-tab select="moduleTabSelected()"
+					heading="Módulos">
 				<div style="padding-top: 10px">
 					<div ng-hide="module.isConsult">
 						<div class="form-group">
@@ -137,8 +139,86 @@
 									ng-repeat="bean in module.beans | orderBy: 'name'"
 									ng-click="$parent.module.createOrEditBean(bean.id)">
 									<td>{{bean.name}}</td>
-									<td>{{bean.subjectId | FindSubjectById : 'name'}}</td>
+									<td>{{bean.subject.name}}</td>
 									<td>{{bean.referenceDate | date : 'dd/MM/yyyy'}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+				</uib-tab> <!-- Aulas --> <uib-tab select="classschedulementTabSelected()"
+					heading="Aulas">
+				<div style="padding-top: 10px">
+					<div ng-hide="classschedulement.isConsult">
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Data da Aula</label>
+							<div class="col-xs-4 input-group">
+								<input type="text" class="form-control" uib-datepicker-popup
+									ng-model="classschedulement.form.startDate"
+									is-open="classschedulement.startDatePopup.opened"
+									min-date="minDate" max-date="maxDate"
+									datepicker-options="dateOptions" current-text="Hoje"
+									clear-text="Limpar" close-text="Fechar" /> <span
+									class="input-group-btn">
+									<button type="button" class="btn btn-default"
+										ng-click="classschedulement.startDatePopup.opened = true">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Matéria</label>
+							<div class="col-xs-4">
+								<select ng-model="classschedulement.form.subjectId"
+									class="form-control">
+									<option ng-repeat="bean in classschedulement.subjects"
+										value="{{bean.id}}">{{bean.name}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Módulo</label>
+							<div class="col-xs-4">
+								<select ng-model="classschedulement.form.moduleId"
+									class="form-control">
+									<option ng-repeat="bean in classschedulement.modules"
+										value="{{bean.id}}">{{bean.name}}</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="col-xs-6">
+							<button class="btn btn-primary"
+								ng-click="classschedulement.saveForm(beanForm.startDate.$valid)"
+								ng-disabled="beanForm.startDate.$invalid">Salvar Aula</button>
+							<button class="btn btn-link"
+								ng-click="classschedulement.cancelForm()">Cancelar</button>
+						</div>
+					</div>
+
+					<div ng-show="classschedulement.isConsult">
+						<div class="btn-toolbar">
+							<button class="btn btn-link btn-sm"
+								ng-click="classschedulement.createOrEditBean()">Nova
+								Aula</button>
+						</div>
+						<table class="table table-striped table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>Data da Aula</th>
+									<th>Matéria</th>
+									<th>Módulo</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr style="cursor: pointer"
+									ng-repeat="bean in classschedulement.beans | orderBy: 'name'"
+									ng-click="$parent.classschedulement.createOrEditBean(bean.id)">
+									<td>{{bean.startDate | date : 'dd/MM/yyyy'}}</td>
+									<td>{{bean.subject.name}}</td>
+									<td>{{bean.module.name}}</td>
 								</tr>
 							</tbody>
 						</table>
