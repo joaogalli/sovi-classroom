@@ -70,6 +70,19 @@
 									}
 								};
 
+								var bulkFindById = function(entries, callback) {
+									var json = {
+										entries : entries
+									};
+
+									$http.post('/api/bulkFindById', angular.toJson(json)).then(
+											function(response) {
+												callback(null, response.data);
+											}, function(data) {
+												callback(data);
+											});
+								};
+
 								var setSort = function(propertiesArray) {
 									this.sortString = propertiesArray.join();
 								};
@@ -100,6 +113,7 @@
 									findAll : findAll,
 									findQuery : findQuery,
 									findById : findById,
+									bulkFindById: bulkFindById,
 									setSort : setSort,
 									getNumberOfPages : getNumberOfPages
 								};

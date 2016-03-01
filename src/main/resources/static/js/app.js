@@ -167,21 +167,35 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 
 app.controller('CalendarController', [
 		'$scope',
+		'$uibModal',
 		'CourseService',
 		'SubjectService',
 		'ModuleService',
 		'ClassSchedulementService',
-		function($scope, CourseService, SubjectService, ModuleService,
+		function($scope, $uibModal, CourseService, SubjectService, ModuleService,
 				ClassSchedulementService) {
 
 			$scope.vm = {};
-
-			$scope.$watch('vm.isCellOpen', function(newValue) {
-				console.info(newValue);
-			});
-
 			$scope.vm.calendarView = 'month';
 			$scope.vm.viewDate = new Date();
+			$scope.vm.events = [];
+
+			$scope.vm.eventClicked = function(event) {
+				console.log('Event clicked:', event);
+
+				var modalInstance = $uibModal.open({
+					animation : true,
+					templateUrl : 'templates/classSchedulementDetails.html',
+					controller : 'ClassSchedulementDetailsController',
+					size : 'md',
+					resolve : {
+						classSchedulement : function() {
+							return event.data;
+						}
+					}
+				});
+
+			};
 
 			ClassSchedulementService.findAll(function(error, list) {
 				if (error) {
@@ -193,39 +207,86 @@ app.controller('CalendarController', [
 
 							$scope.vm.events.push({
 								title : subject.name,
-								startsAt: new Date(element.startDate)
+								startsAt : new Date(element.startDate),
+								data : element
 							})
 						});
 					});
 				}
 			});
 
-			$scope.vm.events = [ {
-				title : 'My event title', // The title of the event
-				type : 'info', // The type of the event (determines its color). Can be
-				// important, warning, info, inverse, success or special
-				startsAt : new Date(2013, 5, 1, 1), // A javascript date object for when
-				// the event starts
-				endsAt : new Date(2014, 8, 26, 15), // Optional - a javascript date
-				// object for when the event ends
-				editable : false, // If edit-event-html is set and this field is
-				// explicitly set to false then dont make it editable.
-				deletable : false, // If delete-event-html is set and this field is
-				// explicitly set to false then dont make it
-				// deleteable
-				draggable : true, // Allow an event to be dragged and dropped
-				resizable : true, // Allow an event to be resizable
-				incrementsBadgeTotal : true, // If set to false then will not count
-				// towards the badge total amount on the
-				// month and year view
-				recursOn : 'year', // If set the event will recur on the given period.
-				// Valid values are year or month
-				cssClass : 'a-css-class-name' // A CSS class (or more, just separate
-			// with spaces) that will be added to the
-			// event when it is displayed on each
-			// view. Useful for marking an event as
-			// selected / active etc
-			} ];
+			$scope.timespanClick = function(event) {
+				console.info('on-timespan-click');
+			};
+
+		} ]);
+
+app.controller('ClassSchedulementDetailsController', [
+		'$scope',
+		'$uibModalInstance',
+		'CourseService',
+		'SubjectService',
+		'ModuleService',
+		'ClassSchedulementService',
+		'classSchedulement',
+		function($scope, $uibModalInstance, CourseService, SubjectService,
+				ModuleService, ClassSchedulementService, classSchedulement) {
+			console.log('classSchedulement', classSchedulement);
+
+			$scope.form = classSchedulement;
+			$scope.isEditing = false;
+
+			if (classSchedulement) {
+				var json = [ {
+					id : classSchedulement.courseId,
+					collection : "courses"
+				}, {
+					id : classSchedulement.subjectId,
+					collection : "subjects"
+				}, {
+					id : classSchedulement.moduleId,
+					collection : "modules"
+				} ];
+
+				ClassSchedulementService.bulkFindById(json, function(error, data) {
+					if (error) {
+						console.error(error);
+					} else {
+						var bean = $scope.form;
+
+						bean.course = data.entries['courses'][bean.courseId];
+						bean.subject = data.entries['subjects'][bean.subjectId];
+						bean.module = data.entries['modules'][bean.moduleId];
+
+						console.log('bean', bean);
+					}
+				});
+			}
+
+			$scope.edit = function() {
+				this.isEditing = true;
+
+				CourseService.findAll(function(error, data) {
+					if (error)
+						console.error(error);
+					else
+						$scope.courses = data;
+				});
+
+				SubjectService.findQuery({
+					'courseId' : $scope.form.courseId
+				}, function(error, data) {
+					if (error) {
+						console.error(error);
+					} else {
+						$scope.subjects = data;
+					}
+				});
+			}
+
+			$scope.close = function() {
+				$uibModalInstance.close();
+			}
 
 		} ]);
 

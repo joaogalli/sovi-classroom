@@ -1,7 +1,7 @@
 
 <div class="row">
 
-	<div class="col-md-6 text-left">
+	<div class="col-md-4 text-left">
 		<div class="btn-group">
 
 			<button class="btn btn-primary" mwl-date-modifier date="vm.viewDate"
@@ -13,9 +13,13 @@
 		</div>
 	</div>
 
-	<br class="visible-xs visible-sm">
+	<!-- <br class="visible-xs visible-sm"> -->
 
-	<div class="col-md-6 text-right">
+	<div class="col-md-4 text-center vtop">
+		<h4>{{vm.calendarTitle}}</h4>
+	</div>
+
+	<div class="col-md-4 text-right">
 		<div class="btn-group">
 			<label class="btn btn-primary" ng-model="vm.calendarView"
 				uib-btn-radio="'year'">Ano</label> <label class="btn btn-primary"
@@ -25,7 +29,6 @@
 				ng-model="vm.calendarView" uib-btn-radio="'day'">Dia</label>
 		</div>
 	</div>
-
 </div>
 
 <br>

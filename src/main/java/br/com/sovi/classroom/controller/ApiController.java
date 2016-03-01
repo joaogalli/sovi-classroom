@@ -25,6 +25,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
+import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest;
+import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest.Entry;
 import br.com.sovi.classroom.util.JsonUtils;
 
 /**
@@ -42,6 +44,38 @@ public class ApiController extends AbstractController {
 		// Criar service para abstrair o mongodb
 		MongoClient mongoClient = new MongoClient();
 		db = mongoClient.getDatabase("test");
+	}
+
+	@RequestMapping(value = "/bulkFindById", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> bulkFindById(@RequestBody String requestBody) {
+		BulkFindByIdRequest bulkFindById = (BulkFindByIdRequest) JsonUtils.fromJson(requestBody,
+				BulkFindByIdRequest.class);
+		List<Entry> entries = bulkFindById.getEntries();
+
+		Document entriesDocument = new Document();
+		Document response = new Document("entries", entriesDocument);
+
+		for (Entry entry : entries) {
+			MongoCollection<Document> collection = db.getCollection(entry.getCollection());
+			if (collection != null) {
+				FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(entry.getId())));
+				Document document = iterable.first();
+				if (document != null) {
+					document.append("id", document.get("_id").toString());
+
+					Document collectionDocument = (Document) entriesDocument.get(entry.getCollection());
+					if (collectionDocument == null) {
+						collectionDocument = new Document();
+						entriesDocument.append(entry.getCollection(), collectionDocument);
+					}
+
+					collectionDocument.append(document.get("_id").toString(), document);
+				}
+			}
+		}
+
+		return responseBuilder.success(JsonUtils.toJson(response));
 	}
 
 	@RequestMapping(value = "/*", method = RequestMethod.GET)
@@ -197,7 +231,7 @@ public class ApiController extends AbstractController {
 			collection.insertOne(document);
 
 		document.append("id", document.get("_id").toString());
-		
+
 		return new ResponseEntity<String>(JsonUtils.toJson(document), HttpStatus.OK);
 	}
 
