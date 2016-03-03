@@ -203,26 +203,40 @@ app.controller('CalendarController', [
 						}
 					}
 				});
+
+				console.log('modalInstance: ', modalInstance);
+
+				modalInstance.result.then(function(selectedItem) {
+					update();
+				});
 			}
-			;
 
-			ClassSchedulementService.findAll(function(error, list) {
-				if (error) {
-					console.error(error);
-				} else {
-					list.forEach(function(element, index, array) {
-						SubjectService.findById(element.subjectId).then(function(response) {
-							var subject = response.data;
+			function update() {
+				$scope.vm.events = [];
+				ClassSchedulementService.findAll(function(error, list) {
+					if (error) {
+						console.error(error);
+					} else {
+						list.forEach(function(element, index, array) {
+							SubjectService.findById(element.subjectId).then(
+									function(response) {
+										var subject = response.data;
 
-							$scope.vm.events.push({
-								title : subject.name,
-								startsAt : new Date(element.startDate),
-								data : element
-							})
+										$scope.vm.events.push({
+											title : subject.name,
+											startsAt : new Date(element.startDate),
+											data : element,
+											editable: true,
+											draggable: false,
+											deletable: false
+										})
+									});
 						});
-					});
-				}
-			});
+					}
+				});
+			}
+
+			update();
 
 			$scope.timespanClick = function(event) {
 				console.info('on-timespan-click');
@@ -243,12 +257,12 @@ app.controller('ClassSchedulementDetailsController', [
 				ModuleService, ClassSchedulementService, classSchedulement, isEdition) {
 			classSchedulement.startDate = new Date(classSchedulement.startDate);
 			console.log(classSchedulement);
-			
+
 			$scope.form = classSchedulement;
 			$scope.isEditing = false;
-			
+
 			$scope.hstep = 1;
-		  $scope.mstep = 15;
+			$scope.mstep = 15;
 
 			// Atualiza a view
 			var updateView = function() {
