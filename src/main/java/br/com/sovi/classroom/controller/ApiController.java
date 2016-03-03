@@ -58,6 +58,9 @@ public class ApiController extends AbstractController {
 		Document response = new Document("entries", entriesDocument);
 
 		for (Entry entry : entries) {
+			if (!StringUtils.hasText(entry.getId()))
+				continue;
+
 			MongoCollection<Document> collection = db.getCollection(entry.getCollection());
 			if (collection != null) {
 				FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(entry.getId())));

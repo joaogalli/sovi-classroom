@@ -55,17 +55,22 @@
 										console.error(data);
 									});
 								};
-
+								
+								// Find By Id
 								var findById = function(id, callback) {
-									var url = '/api/' + this.collection + "/" + id;
-									if (callback) {
-										$http.get(url).then(function(response) {
-											callback(null, response.data);
-										}, function(data) {
-											console.error(data);
-										});
-									} else {
-										return $http.get(url);
+									if (id) {
+										var url = '/api/' + this.collection + "/" + id;
+										if (callback) {
+											$http.get(url).then(function(response) {
+												callback(null, response.data);
+											}, function(data) {
+												console.error(data);
+											});
+										} else {
+											return $http.get(url);
+										}
+									} else if (callback) {
+										callback('Id is undefined.');
 									}
 								};
 
@@ -112,7 +117,7 @@
 									findAll : findAll,
 									findQuery : findQuery,
 									findById : findById,
-									bulkFindById: bulkFindById,
+									bulkFindById : bulkFindById,
 									setSort : setSort,
 									getNumberOfPages : getNumberOfPages
 								};

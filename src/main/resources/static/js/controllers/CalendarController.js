@@ -1,4 +1,3 @@
-
 app.controller('CalendarController', [
 		'$scope',
 		'$uibModal',
@@ -38,8 +37,6 @@ app.controller('CalendarController', [
 					}
 				});
 
-				console.log('modalInstance: ', modalInstance);
-
 				modalInstance.result.then(function(selectedItem) {
 					update();
 				});
@@ -60,9 +57,9 @@ app.controller('CalendarController', [
 											title : subject.name,
 											startsAt : new Date(element.startDate),
 											data : element,
-											editable: true,
-											draggable: false,
-											deletable: false
+											editable : true,
+											draggable : false,
+											deletable : false
 										})
 									});
 						});
@@ -90,7 +87,6 @@ app.controller('ClassSchedulementDetailsController', [
 		function($scope, $uibModalInstance, CourseService, SubjectService,
 				ModuleService, ClassSchedulementService, classSchedulement, isEdition) {
 			classSchedulement.startDate = new Date(classSchedulement.startDate);
-			console.log(classSchedulement);
 
 			$scope.form = classSchedulement;
 			$scope.isEditing = false;
@@ -117,9 +113,12 @@ app.controller('ClassSchedulementDetailsController', [
 					} else {
 						var bean = $scope.form;
 
-						bean.course = data.entries['courses'][bean.courseId];
-						bean.subject = data.entries['subjects'][bean.subjectId];
-						bean.module = data.entries['modules'][bean.moduleId];
+						if (bean.courseId)
+							bean.course = data.entries['courses'][bean.courseId];
+						if (bean.subjectId)
+							bean.subject = data.entries['subjects'][bean.subjectId];
+						if (bean.moduleId)
+							bean.module = data.entries['modules'][bean.moduleId];
 					}
 				});
 			}
@@ -228,7 +227,6 @@ app.controller('ClassSchedulementDetailsController', [
 			}
 
 			// Se é para editar já ativa a edição
-			console.log('isEdition', isEdition);
 			if (isEdition) {
 				$scope.edit();
 			}

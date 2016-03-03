@@ -8,6 +8,11 @@ app.controller('CourseController', [
 		'ClassSchedulementService',
 		function($scope, CourseService, SubjectService, ModuleService,
 				StudentService, ApiCrudController, ClassSchedulementService) {
+			// Propriedades do timepicker
+			$scope.hstep = 1;
+			$scope.mstep = 15;
+			
+			// Course Crud config
 			ApiCrudController.build($scope);
 			CourseService.setSort([ "name" ]);
 			$scope.setApiService(CourseService);
@@ -22,7 +27,7 @@ app.controller('CourseController', [
 				}
 			}
 
-			// Subject
+			// Subject Crud Config
 			$scope.subject = {};
 			ApiCrudController.build($scope.subject);
 			SubjectService.setSort([ "name" ]);
@@ -37,7 +42,7 @@ app.controller('CourseController', [
 				}
 			};
 
-			// Module
+			// Module Crud Config
 			$scope.module = {};
 			ApiCrudController.build($scope.module);
 			SubjectService.setSort([ "name" ]);
@@ -92,7 +97,7 @@ app.controller('CourseController', [
 				}
 			});
 
-			// Class Schedulement
+			// Class Schedulement Crud Config
 			$scope.classschedulement = {};
 			ApiCrudController.build($scope.classschedulement);
 			SubjectService.setSort([ "startDate" ]);
@@ -103,17 +108,21 @@ app.controller('CourseController', [
 			}
 			$scope.classschedulement['preSaveForm'] = function(bean) {
 				if (bean) {
-					bean['courseId'] = $scope.form.id;
+					bean.courseId = $scope.form.id;
+					if (bean.startDate)
+						bean.startDate.setSeconds(0);
 				}
 			};
+			
 			$scope.$watch('classschedulement.beans', function(newValue) {
 				if (newValue) {
-					var bean = {};
 					for (var i = 0; i <= newValue.length; i++) {
-						bean = newValue[i];
+						var bean = newValue[i];
 						if (bean) {
+							bean.startDate = new Date(bean.startDate);
 							bean.subject = {};
 							bean.module = {};
+							
 							(function(bean) {
 								SubjectService.findById(bean.subjectId, function(error, data) {
 									if (error) {
@@ -153,9 +162,15 @@ app.controller('CourseController', [
 							$scope.classschedulement.subjects = data;
 						}
 					});
+				}
+			});
 
+			// Quando o subject é escolhido, busca os módulos disponíveis
+			$scope.$watch('classschedulement.form.subjectId', function(newValue) {
+				if (newValue) {
 					ModuleService.findQuery({
-						"courseId" : $scope.form.id
+						"courseId" : $scope.form.id,
+						"subjectId" : $scope.classschedulement.form.subjectId
 					}, function(error, data) {
 						if (error) {
 							console.error('Error', error);
@@ -163,6 +178,8 @@ app.controller('CourseController', [
 							$scope.classschedulement.modules = data;
 						}
 					});
+				} else {
+					$scope.classschedulement.modules = [];
 				}
 			});
 
