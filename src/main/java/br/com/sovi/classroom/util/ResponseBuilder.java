@@ -42,4 +42,8 @@ public class ResponseBuilder {
 		return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 	}
 
+	public ResponseEntity<String> internal_server_error(String message) {
+		return new ResponseEntity<String>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 }

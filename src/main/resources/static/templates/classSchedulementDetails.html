@@ -17,23 +17,59 @@
 		</div>
 		<div class="form-group">
 			<label>Data:</label>
-			<div>{{form.startDate}} - 20 de Fevereiro de 2016</div>
+			<div>{{form.startDate | date : 'medium'}}</div>
 		</div>
 	</div>
 
 	<div ng-show="isEditing">
 		<form class="form-horizontal" name="beanForm" novalidate>
 			<div class="form-group">
-				<label class="col-xs-2 control-label">Matéria</label>
-				<div class="col-xs-4">
-					<select ng-model="form.subjectId"
-						class="form-control">
-						<option ng-repeat="bean in subjects"
-							value="{{bean.id}}">{{bean.name}}</option>
+				<label class="col-xs-2 control-label">Curso</label>
+				<div class="col-xs-8">
+					<select ng-model="form.courseId" class="form-control">
+						<option ng-repeat="bean in courses" value="{{bean.id}}">{{bean.name}}</option>
 					</select>
 				</div>
 			</div>
-
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Matéria</label>
+				<div class="col-xs-8">
+					<select ng-model="form.subjectId" class="form-control">
+						<option ng-repeat="bean in subjects" value="{{bean.id}}">{{bean.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Módulo</label>
+				<div class="col-xs-8">
+					<select ng-model="form.moduleId" class="form-control">
+						<option ng-repeat="bean in modules" value="{{bean.id}}">{{bean.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Data</label>
+				<div class="col-xs-8 input-group">
+					<input type="text" class="form-control" uib-datepicker-popup
+						ng-model="form.startDate" is-open="startDatePopup.opened"
+						min-date="minDate" max-date="maxDate"
+						datepicker-options="dateOptions" current-text="Hoje"
+						clear-text="Limpar" close-text="Fechar" /> <span
+						class="input-group-btn">
+						<button type="button" class="btn btn-default"
+							ng-click="startDatePopup.opened = true">
+							<i class="glyphicon glyphicon-calendar"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Horário</label>
+				<div class="col-xs-8">
+					<uib-timepicker ng-model="form.startDate" hour-step="hstep"
+						minute-step="mstep" show-meridian="true"></uib-timepicker>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>

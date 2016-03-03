@@ -24,6 +24,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.UpdateResult;
 
 import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest;
 import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest.Entry;
@@ -62,7 +63,9 @@ public class ApiController extends AbstractController {
 				FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(entry.getId())));
 				Document document = iterable.first();
 				if (document != null) {
-					document.append("id", document.get("_id").toString());
+					String id = document.get("_id").toString();
+
+					prepareToGoOut(document);
 
 					Document collectionDocument = (Document) entriesDocument.get(entry.getCollection());
 					if (collectionDocument == null) {
@@ -70,7 +73,7 @@ public class ApiController extends AbstractController {
 						entriesDocument.append(entry.getCollection(), collectionDocument);
 					}
 
-					collectionDocument.append(document.get("_id").toString(), document);
+					collectionDocument.append(id, document);
 				}
 			}
 		}
@@ -132,11 +135,19 @@ public class ApiController extends AbstractController {
 
 		List<Document> documents = new ArrayList<Document>();
 		for (Document document : iterable) {
-			document.append("id", document.get("_id").toString());
+			prepareToGoOut(document);
 			documents.add(document);
 		}
 
-		return new ResponseEntity<String>(JsonUtils.toJson(documents), HttpStatus.OK);
+		String json = JsonUtils.toJson(documents);
+		return new ResponseEntity<String>(json, HttpStatus.OK);
+	}
+
+	private void prepareToGoOut(Document document) {
+		String id = document.get("_id").toString();
+		document.append("id", id);
+		document.remove("_id");
+		document.append("_id", new Document("$oid", id));
 	}
 
 	@RequestMapping(value = "/*/numberofpages", method = RequestMethod.GET)
@@ -158,23 +169,29 @@ public class ApiController extends AbstractController {
 		if (numberOfPages <= 0)
 			numberOfPages = 1;
 
-		return new ResponseEntity<String>("{ \"numberOfPages\": " + numberOfPages + " }", HttpStatus.OK);
+		return responseBuilder.success("{ \"numberOfPages\": " + numberOfPages + " }");
 	}
 
+	/**
+	 * FIND BY ID
+	 * @param id
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/*/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<String> get(@PathVariable("id") String id, HttpServletRequest request) {
+	public ResponseEntity<String> findById(@PathVariable("id") String id, HttpServletRequest request) {
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(id)));
 		Document document = iterable.first();
 
 		if (document != null) {
-			document.append("id", document.get("_id").toString());
-			return new ResponseEntity<String>(document.toJson(), HttpStatus.OK);
+			prepareToGoOut(document);
+			return responseBuilder.success(JsonUtils.toJson(document));
 		}
 		else
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			return responseBuilder.notFound();
 	}
 
 	@RequestMapping(value = "/*/{id}/add/{path}", method = RequestMethod.POST)
@@ -212,10 +229,16 @@ public class ApiController extends AbstractController {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * SAVE
+	 * @param request
+	 * @param requestBody
+	 * @return
+	 */
 	@RequestMapping(value = "/*", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
-		logger.debug("Saving api document: " + requestBody);
+		logger.debug("Saving api document");
 
 		String collectionName = getCollectionName(request);
 		MongoCollection<Document> collection = db.getCollection(collectionName);
@@ -225,14 +248,18 @@ public class ApiController extends AbstractController {
 		if (document.containsKey("id"))
 			document.remove("id");
 
-		if (document.containsKey("_id"))
-			collection.replaceOne(new Document("_id", document.get("_id")), document);
-		else
+		if (document.containsKey("_id")) {
+			UpdateResult updateResult = collection.replaceOne(new Document("_id", document.get("_id")), document);
+			if (updateResult.getMatchedCount() <= 0) {
+				return responseBuilder.internal_server_error("Could not update document.");
+			}
+		}
+		else {
 			collection.insertOne(document);
+		}
 
-		document.append("id", document.get("_id").toString());
-
-		return new ResponseEntity<String>(JsonUtils.toJson(document), HttpStatus.OK);
+		prepareToGoOut(document);
+		return responseBuilder.success(JsonUtils.toJson(document));
 	}
 
 	private String getCollectionName(HttpServletRequest request) {

@@ -8,7 +8,6 @@
 							function($http) {
 
 								var save = function(document, callback) {
-									console.info('save', document);
 									$http.post('/api/' + this.collection,
 											angular.toJson(document)).then(function(response) {
 										callback(null, response.data);
