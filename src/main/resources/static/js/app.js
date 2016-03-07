@@ -54,6 +54,8 @@ app.config([ '$routeProvider', function($routeProvider) {
 app.config(function(calendarConfig) {
 	calendarConfig.dateFormatter = 'moment'; // use moment to format dates
 	moment.locale('pt');
+	
+	calendarConfig.i18nStrings.weekNumber = 'Semana {week}';
 });
 
 app.factory('CourseService', [ 'ApiService', function(ApiService) {

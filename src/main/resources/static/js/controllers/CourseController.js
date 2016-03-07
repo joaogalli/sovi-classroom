@@ -8,10 +8,6 @@ app.controller('CourseController', [
 		'ClassSchedulementService',
 		function($scope, CourseService, SubjectService, ModuleService,
 				StudentService, ApiCrudController, ClassSchedulementService) {
-			// Propriedades do timepicker
-			$scope.hstep = 1;
-			$scope.mstep = 15;
-			
 			// Course Crud config
 			ApiCrudController.build($scope);
 			CourseService.setSort([ "name" ]);

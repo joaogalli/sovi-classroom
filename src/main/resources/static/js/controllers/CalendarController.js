@@ -91,9 +91,6 @@ app.controller('ClassSchedulementDetailsController', [
 			$scope.form = classSchedulement;
 			$scope.isEditing = false;
 
-			$scope.hstep = 1;
-			$scope.mstep = 15;
-
 			// Atualiza a view
 			var updateView = function() {
 				var json = [ {
