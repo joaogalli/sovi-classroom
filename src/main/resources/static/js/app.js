@@ -46,7 +46,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'pages/students.html',
 		controller : 'StudentController'
 	})
-
+	
 	;
 
 } ]);
@@ -184,15 +184,14 @@ app.controller('StudentController', [
 			$scope.setApiService(StudentService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
-			
+
 			$scope.$watch('form', function(newValue) {
-				if (newValue.datanascimento)
+				if (newValue && newValue.datanascimento)
 					newValue.datanascimento = new Date(newValue.datanascimento);
 			});
 
 			$scope.estadoscivis = [ "Solteiro (a)", "Casado (a)", "Viúvo (a)",
 					"Separado (a)" ];
-
 		} ]);
 
 app.run([ "$rootScope", "$location", function($rootScope, $location) {

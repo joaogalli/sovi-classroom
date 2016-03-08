@@ -1,9 +1,10 @@
 
 <div class="row">
-
-	<div class="col-md-4 text-left">
+<!-- 	<div class="col-md-1 row">
+		<button class="btn btn-success">Novo Evento</button>
+	</div>
+ -->	<div class="col-sm-4 text-left">
 		<div class="btn-group">
-
 			<button class="btn btn-primary" mwl-date-modifier date="vm.viewDate"
 				decrement="vm.calendarView">Anterior</button>
 			<button class="btn btn-default" mwl-date-modifier date="vm.viewDate"
@@ -15,11 +16,11 @@
 
 	<!-- <br class="visible-xs visible-sm"> -->
 
-	<div class="col-md-4 text-center vtop">
+	<div class="col-sm-4 text-center vtop">
 		<h4>{{vm.calendarTitle}}</h4>
 	</div>
 
-	<div class="col-md-4 text-right">
+	<div class="col-sm-4 text-right">
 		<div class="btn-group">
 			<label class="btn btn-primary" ng-model="vm.calendarView"
 				uib-btn-radio="'year'">Ano</label> <label class="btn btn-primary"
