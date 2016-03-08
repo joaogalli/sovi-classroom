@@ -54,7 +54,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 app.config(function(calendarConfig) {
 	calendarConfig.dateFormatter = 'moment'; // use moment to format dates
 	moment.locale('pt');
-	
+
 	calendarConfig.i18nStrings.weekNumber = 'Semana {week}';
 });
 
@@ -158,13 +158,41 @@ app.controller('LoginController', [
 
 		} ]);
 
-app.controller('StudentController', [ '$scope', 'StudentService',
-		'ApiCrudController', function($scope, StudentService, ApiCrudController) {
+app.filter('concatif', function() {
+	return function(first, second) {
+		if (first) {
+			if (second) {
+				return first + ' - ' + second;
+			} else {
+				return first;
+			}
+		} else if (second) {
+			return second;
+		} else {
+			return "";
+		}
+	};
+});
+
+app.controller('StudentController', [
+		'$scope',
+		'StudentService',
+		'ApiCrudController',
+		function($scope, StudentService, ApiCrudController) {
 			ApiCrudController.build($scope);
-			StudentService.setSort([ "name" ]);
+			StudentService.setSort([ "nome" ]);
 			$scope.setApiService(StudentService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
+			
+			$scope.$watch('form', function(newValue) {
+				if (newValue.datanascimento)
+					newValue.datanascimento = new Date(newValue.datanascimento);
+			});
+
+			$scope.estadoscivis = [ "Solteiro (a)", "Casado (a)", "Viúvo (a)",
+					"Separado (a)" ];
+
 		} ]);
 
 app.run([ "$rootScope", "$location", function($rootScope, $location) {
