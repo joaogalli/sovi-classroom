@@ -1,6 +1,6 @@
 var app = angular.module('app', [ 'ngRoute', 'ngMessages',
 		'pascalprecht.translate', 'ui.bootstrap', 'mwl.calendar', 'UserRegister',
-		'Authentication', 'Api', 'Parameter', 'ApiCrud' ]);
+		'Authentication', 'Api', 'Parameter', 'ApiCrud', 'Validation' ]);
 
 app.config([
 		'$translateProvider',
@@ -194,7 +194,9 @@ app.controller('StudentFormController', [
 		'StudentService',
 		'ApiFormController',
 		'$routeParams',
-		function($scope, StudentService, ApiFormController, $routeParams) {
+		'CpfCnpjValidation',
+		function($scope, StudentService, ApiFormController, $routeParams,
+				CpfCnpjValidation) {
 			ApiFormController.build($scope);
 			$scope.isConsult = false;
 			$scope.setApiService(StudentService);
@@ -210,25 +212,35 @@ app.controller('StudentFormController', [
 
 			$scope.onCpfChange = function() {
 				if ($scope.form.cpf) {
-					StudentService.findQuery({
-						"cpf" : $scope.form.cpf
-					}, function(error, data) {
-						if (error) {
-							console.error(error);
-						} else {
-							if (angular.isArray(data)) {
-								data.some(function(el) {
-									if (el.id === $scope.form.id) {
-										$scope.beanForm.cpf.$setValidity('repeated', true);
-										return true;
-									} else {
-										$scope.beanForm.cpf.$setValidity('repeated', false);
-										return false;
-									}
-								});
+					if (!CpfCnpjValidation.validateCpf($scope.form.cpf)) {
+						$scope.beanForm.cpf.$setValidity('repeated', true);
+						$scope.beanForm.cpf.$setValidity('invalidCpf', false);
+					} else {
+						$scope.beanForm.cpf.$setValidity('invalidCpf', true);
+						
+						StudentService.findQuery({
+							"cpf" : $scope.form.cpf
+						}, function(error, data) {
+							if (error) {
+								console.error(error);
+							} else {
+								if (angular.isArray(data)) {
+									data.some(function(el) {
+										if (el.id === $scope.form.id) {
+											$scope.beanForm.cpf.$setValidity('repeated', true);
+											return true;
+										} else {
+											$scope.beanForm.cpf.$setValidity('repeated', false);
+											return false;
+										}
+									});
+								}
 							}
-						}
-					});
+						});
+					}
+				} else {
+					$scope.beanForm.cpf.$setValidity('repeated', true);
+					$scope.beanForm.cpf.$setValidity('invalidCpf', true);
 				}
 			};
 

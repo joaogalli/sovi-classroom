@@ -114,8 +114,10 @@
 							</div>
 							<div class="col-lg-12 help-block" ng-messages="beanForm.cpf.$error"
 								ng-if="!beanForm.cpf.$pristine">
-								<p ng-message="required">Preencha com um CPF válido.</p>
 								<p ng-message="repeated">Este CPF já existe para outro aluno.</p>
+								<p ng-message="invalidCpf">Este CPF não é válido.</p>
+								<p ng-message="minlength">Insira apenas 11 números.</p>
+								<p ng-message="maxlength">Insira apenas 11 números.</p>
 							</div>
 						</div>
 
