@@ -1,14 +1,607 @@
-<div class="panel">
+<div class="panel panel-danger">
 	<div class="panel-body view-header">
 		<h2 class="title">Alunos</h2>
 		<div class="button-bar">
-			<button class="btn btn-default btn-sm" ng-click="createOrEditBean()">Novo
-				Aluno</button>
+			<button class="btn btn-default btn-sm" ng-show="isConsult"
+				ng-click="createOrEditBean()">Novo Aluno</button>
+			<button class="btn btn-success btn-sm" ng-hide="isConsult"
+				ng-click="saveForm(beanForm.$valid)" ng-disabled="beanForm.$invalid">Salvar</button>
+			<button class="btn btn-link btn-sm" ng-hide="isConsult"
+				ng-click="cancelForm()">Cancelar</button>
 		</div>
 	</div>
 </div>
 
-<div>
+<div ng-show="!isConsult" class="well bs-component">
+	<form class="row" name="beanForm" novalidate>
+		<div class="col-sm-12">
+			<div class="col-sm-6">
+				<div class="col-sm-12">
+					<fieldset>
+						<legend>Identificação Pessoal</legend>
+						<!-- NOME -->
+						<div class="form-group row"
+							ng-class="{ 'has-error': beanForm.nome.$touched && beanForm.nome.$invalid }">
+							<label class="col-lg-3 control-label">Nome do aluno</label>
+							<div class="col-lg-9">
+								<input type="text" name="nome" ng-model="form.nome"
+									class="form-control" required autofocus>
+							</div>
+
+							<div class="col-xs-0 col-lg-3"></div>
+
+							<div class="col-xs-12 col-lg-9 help-block" ng-messages="beanForm.nome.$error"
+								ng-if="!beanForm.nome.$pristine">
+								<p ng-message="required">Preencha o nome do aluno.</p>
+							</div>
+						</div>
+
+						<!-- ESTADO CIVIL -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Estado Civil</label>
+							<div class="col-lg-9">
+								<select class="form-control" ng-model="form.estadocivil">
+									<option ng-repeat="ec in estadoscivis" value="{{ec}}">{{ec}}</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- IDADE -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Idade</label>
+							<div class="col-lg-9">
+								<input type="number" name="idade" ng-model="form.idade"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- DATA DE NASCIMENTO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Data de Nascimento</label>
+							<div class="col-lg-9 input-group">
+								<input type="text" class="form-control" uib-datepicker-popup
+									ng-model="form.datanascimento" is-open="datanascimentoPopup.opened"
+									min-date="minDate" max-date="maxDate"
+									datepicker-options="dateOptions" current-text="Hoje"
+									clear-text="Limpar" close-text="Fechar" /> <span
+									class="input-group-btn">
+									<button type="button" class="btn btn-default"
+										ng-click="datanascimentoPopup.opened = true">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+
+						<!-- CIDADE NASCIMENTO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Cidade de
+								Nascimento</label>
+							<div class="col-lg-9">
+								<input type="text" name="cidadenascimento"
+									ng-model="form.cidadenascimento" class="form-control">
+							</div>
+						</div>
+
+						<!-- ESTADO NASCIMENTO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Estado de
+								Nascimento</label>
+							<div class="col-lg-9">
+								<input type="text" name="estadonascimento"
+									ng-model="form.estadonascimento" class="form-control">
+							</div>
+						</div>
+
+						<!-- RG -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Número do RG</label>
+							<div class="col-lg-9">
+								<input type="text" name="rg" ng-model="form.rg"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- CPF -->
+						<div class="form-group row"
+							ng-class="{ 'has-error': beanForm.cpf.$touched && beanForm.cpf.$invalid }">
+							<label class="col-lg-3 control-label">CPF</label>
+							<div class="col-lg-9">
+								<input type="number" name="cpf" ng-model="form.cpf"
+									class="form-control" ng-minlength="11" ng-maxlength="11">
+							</div>
+							<div class="help-block" ng-messages="beanForm.cpf.$error"
+								ng-if="!beanForm.cpf.$pristine">
+								<p ng-message="required">Preencha com um CPF válido.</p>
+							</div>
+						</div>
+
+						<!-- SITUACAO MILITAR -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Situação Militar</label>
+							<div class="col-lg-9">
+								<input type="text" name="situacaomilitar"
+									ng-model="form.situacaomilitar" class="form-control">
+							</div>
+						</div>
+
+						<!-- NOME DO PAI -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Nome do Pai</label>
+							<div class="col-lg-9">
+								<input type="text" name="nomepai" ng-model="form.nomepai"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- NOME DO MÃE -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Nome do Mãe</label>
+							<div class="col-lg-9">
+								<input type="text" name="nomemae" ng-model="form.nomemae"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- GRAU DE ESCOLARIDADE -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Grau de
+								Escolaridade</label>
+							<div class="col-lg-9">
+								<input type="text" name="grauescolaridade"
+									ng-model="form.grauescolaridade" class="form-control">
+							</div>
+						</div>
+
+						<!-- ATÉ -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Até</label>
+							<div class="col-lg-9">
+								<input type="text" name="grauescolaridadeate"
+									ng-model="form.grauescolaridadeate" class="form-control">
+							</div>
+						</div>
+
+					</fieldset>
+				</div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="col-sm-12">
+					<fieldset>
+						<legend>Endereço</legend>
+
+						<!-- ENDERECO RESIDENCIAL -->
+						<div class="form-group row">
+							<label class="text-left control-label col-lg-3">Endereço
+								Residencial</label>
+							<div class="col-lg-9">
+								<input type="text" name="enderecoresidencial"
+									ng-model="form.enderecoresidencial" class="form-control">
+							</div>
+						</div>
+
+						<!-- NÚMERO -->
+						<div class="form-group row">
+							<label class="text-left control-label col-lg-3">Número</label>
+							<div class="col-lg-9">
+								<input type="number" name="numeroresidencial"
+									ng-model="form.numeroresidencial" class="form-control">
+							</div>
+						</div>
+
+						<!-- BAIRRO -->
+						<div class="form-group row">
+							<label class="text-left control-label col-lg-3">Bairro</label>
+							<div class="col-lg-9">
+								<input type="text" name="bairroresidencial"
+									ng-model="form.bairroresidencial" class="form-control">
+							</div>
+						</div>
+
+						<!-- CIDADE -->
+						<div class="form-group row">
+							<label class="text-left control-label col-lg-3">Cidade</label>
+							<div class="col-lg-9">
+								<input type="text" name="cidaderesidencial"
+									ng-model="form.cidaderesidencial" class="form-control">
+							</div>
+						</div>
+
+						<!-- UF -->
+						<div class="form-group row">
+							<label class="text-left control-label col-lg-3">UF</label>
+							<div class="col-lg-9">
+								<input type="text" name="ufresidencial"
+									ng-model="form.ufresidencial" class="form-control">
+							</div>
+						</div>
+
+						<!-- CEP -->
+						<div class="form-group row">
+							<label class="text-left control-label col-lg-3">CEP</label>
+							<div class="col-lg-9">
+								<input type="text" name="cepresidencial"
+									ng-model="form.cepresidencial" class="form-control">
+							</div>
+						</div>
+
+					</fieldset>
+				</div>
+
+				<div class="col-sm-12">
+					<fieldset>
+						<legend>Contato</legend>
+
+						<!-- EMAIL -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">E-Mail</label>
+							<div class="col-lg-9">
+								<input type="email" name="email" ng-model="form.email"
+									class="form-control">
+							</div>
+
+							<div class="help-block" ng-messages="beanForm.email.$error"
+								ng-if="!beanForm.email.$pristine">
+								<p ng-message="email">Insira um e-mail válido.</p>
+							</div>
+						</div>
+						<!-- TELEFONE RESIDENCIAL -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Telefone
+								Residêncial</label>
+							<div class="col-lg-9">
+								<input type="text" name="telefoneresidencial"
+									ng-model="form.telefoneresidencial" class="form-control">
+							</div>
+						</div>
+						<!-- TELEFONE CELULAR -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Telefone Celular</label>
+							<div class="col-lg-9">
+								<input type="text" name="telefonecelular"
+									ng-model="form.telefonecelular" class="form-control">
+							</div>
+						</div>
+						<!-- OPERADORA CELULAR -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Operadora Celular</label>
+							<div class="col-lg-9">
+								<input type="text" name="operadoracelular"
+									ng-model="form.operadoracelular" class="form-control">
+							</div>
+						</div>
+
+					</fieldset>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-12">
+			<legend>Informação Pessoal</legend>
+			<div class="col-sm-6">
+				<div class="col-sm-12">
+					<fieldset>
+
+						<!-- COM QUEM RESIDE -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Com quem reside?</label>
+							<div class="col-lg-9">
+								<input type="text" name="comquemreside"
+									ng-model="form.comquemreside" class="form-control">
+							</div>
+						</div>
+
+						<!-- EMPRESA QUE TRABALHA -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Empresa que
+								trabalha</label>
+							<div class="col-lg-9">
+								<input type="text" name="empresaquetrabalha"
+									ng-model="form.empresaquetrabalha" class="form-control">
+							</div>
+						</div>
+
+						<!-- IGREJA QUE PERTENCE -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Igreja que pertence</label>
+							<div class="col-lg-9">
+								<input type="text" name="igrejapertence"
+									ng-model="form.igrejapertence" class="form-control">
+							</div>
+						</div>
+
+						<!-- TELEFONE IGREJA -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Telefone da Igreja</label>
+							<div class="col-lg-9">
+								<input type="text" name="telefoneigreja"
+									ng-model="form.telefoneigreja" class="form-control">
+							</div>
+						</div>
+
+						<!-- PASTOR -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Pastor</label>
+							<div class="col-lg-9">
+								<input type="text" name="pastor" ng-model="form.pastor"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- TELEFONE PASTOR -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Telefone do Pastor</label>
+							<div class="col-lg-9">
+								<input type="text" name="telefonepastor"
+									ng-model="form.telefonepastor" class="form-control">
+							</div>
+						</div>
+
+						<!-- QUANTO TEMPO NA IGREJA -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Há quanto tempo
+								está nesta igreja?</label>
+							<div class="col-lg-9">
+								<input type="text" name="tempoigreja"
+									ng-model="form.tempoigreja" class="form-control">
+							</div>
+						</div>
+
+						<!-- BATIZADO ESPIRITO SANTO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Batizado com o
+								Espírito Santo?</label>
+							<div class="col-lg-9">
+								<input type="checkbox" name="batizadoespiritosanto"
+									ng-model="form.batizadoespiritosanto" class="form-control">
+							</div>
+						</div>
+
+						<!-- DIZIMISTA -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">É Dizimista?</label>
+							<div class="col-lg-9">
+								<input type="checkbox" name="dizimista"
+									ng-model="form.dizimista" class="form-control">
+							</div>
+						</div>
+
+						<!-- FACILIDADE PARA PREGAR -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Tem facilidade para
+								pregar?</label>
+							<div class="col-lg-9">
+								<input type="checkbox" name="facilidadepregar"
+									ng-model="form.facilidadepregar" class="form-control">
+							</div>
+						</div>
+
+						<!-- DESDE QUANDO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Desde Quando?</label>
+							<div class="col-lg-9">
+								<input type="text" name="facilidadepregardesdequando"
+									ng-model="form.facilidadepregardesdequando"
+									class="form-control">
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="col-sm-12">
+					<fieldset>
+
+						<!-- EXPERIENCIA VISITACAO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Tem experiência em
+								visitação?</label>
+							<div class="col-lg-9">
+								<input type="checkbox" name="experienciavisitacao"
+									ng-model="form.experienciavisitacao" class="form-control">
+							</div>
+						</div>
+
+						<!-- GANHOU ALGUEM PARA CRISTO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Já ganhou alguém
+								para cristo?</label>
+							<div class="col-lg-9">
+								<input type="text" name="ganhoualguemparacristo"
+									ng-model="form.ganhoualguemparacristo" class="form-control">
+							</div>
+						</div>
+
+						<!-- QUANDO CHAMADO MINISTERIO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Quando sentiu o
+								chamado para o ministério?</label>
+							<div class="col-lg-9">
+								<input type="text" name="quandochamadoparaministerio"
+									ng-model="form.quandochamadoparaministerio"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- AREA DEPOIS FORMADO -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Em que área
+								pretende atuar depois de formado?</label>
+							<div class="col-lg-9">
+								<input type="text" name="areapretendeatuardepoisformado"
+									ng-model="form.areapretendeatuardepoisformado"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- Conhece o regime interno da IPRB? -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Conhece o regime
+								interno da IPRB?</label>
+							<div class="col-lg-9">
+								<input type="checkbox" name="conheceregimeiprb"
+									ng-model="form.conheceregimeiprb" class="form-control">
+							</div>
+						</div>
+
+						<!-- Já foi disciplinado? -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Já foi
+								disciplinado?</label>
+							<div class="col-lg-9">
+								<input type="text" name="jafoidisciplinado"
+									ng-model="form.jafoidisciplinado" class="form-control">
+							</div>
+						</div>
+
+						<!-- DISPOSTO OBEDECER -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Está disposto a
+								obedecer aos regulamentos deste seminário?</label>
+							<div class="col-lg-9">
+								<input type="text" name="obedecerregulamentosseminario"
+									ng-model="form.obedecerregulamentosseminario"
+									class="form-control">
+							</div>
+						</div>
+
+						<!-- Quem será responsável pelo seu pagamento? -->
+						<div class="form-group row">
+							<label class="col-lg-3 control-label">Quem será
+								responsável pelo seu pagamento?</label>
+							<div class="col-lg-9">
+								<input type="text" name="responsavelpagamento"
+									ng-model="form.responsavelpagamento" class="form-control">
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-12">
+			<legend>Informações caso seja Casado</legend>
+			<div class="col-sm-6">
+				<fieldset>
+
+					<!-- Nome do Conjuge -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Nome do Conjuge</label>
+						<div class="col-lg-9">
+							<input type="text" name="nomeconjuge" ng-model="form.nomeconjuge"
+								class="form-control">
+						</div>
+					</div>
+					<!-- N Filhos -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Número de Filhos</label>
+						<div class="col-lg-9">
+							<input type="number" name="numerofilhos"
+								ng-model="form.numerofilhos" class="form-control">
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="col-sm-6">
+				<fieldset>
+					<!-- Tempo casado -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Quanto tempo casado?</label>
+						<div class="col-lg-9">
+							<input type="text" name="tempocasado" ng-model="form.tempocasado"
+								class="form-control">
+						</div>
+					</div>
+					<!-- Opinião Conjuge -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Opinião do Conjuge
+							sobre seu estudo e Minitério?</label>
+						<div class="col-lg-9">
+							<input type="text" name="opiniaoconjuge"
+								ng-model="form.opiniaoconjuge" class="form-control">
+						</div>
+					</div>
+
+				</fieldset>
+			</div>
+		</div>
+
+		<div class="col-sm-12">
+			<legend>Informações caso seja Solteiro</legend>
+			<div class="col-sm-6">
+				<fieldset>
+					<!-- Tem compromisso de namoro ou noivado? -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Tem compromisso de
+							namoro ou noivado?</label>
+						<div class="col-lg-9">
+							<input type="text" name="compromissonamoroounoivado"
+								ng-model="form.compromissonamoroounoivado" class="form-control">
+						</div>
+					</div>
+					<!-- A quanto tempo? -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">A quanto tempo?</label>
+						<div class="col-lg-9">
+							<input type="text" name="compromisonamoroquantotempo"
+								ng-model="form.compromisonamoroquantotempo" class="form-control">
+						</div>
+					</div>
+					<!-- Qual o nome da pessoa? -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Qual o nome da
+							pessoa?</label>
+						<div class="col-lg-9">
+							<input type="text" name="nomedapessoanamoro"
+								ng-model="form.nomedapessoanamoro" class="form-control">
+						</div>
+					</div>
+					<!-- De qual igreja é membro? -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">De qual igreja é
+							membro?</label>
+						<div class="col-lg-9">
+							<input type="text" name="namoromembropessoa"
+								ng-model="form.namoromembropessoa" class="form-control">
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="col-sm-6">
+				<fieldset>
+					<!-- namoro endereço -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Endereço Residêncial</label>
+						<div class="col-lg-9">
+							<input type="text" name="namoroendereco"
+								ng-model="form.namoroendereco" class="form-control">
+						</div>
+					</div>
+					<!-- namoro número -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Número</label>
+						<div class="col-lg-9">
+							<input type="text" name="namoronumero"
+								ng-model="form.namoronumero" class="form-control">
+						</div>
+					</div>
+					<!-- namoro bairro -->
+					<div class="form-group row">
+						<label class="col-lg-3 control-label">Bairro</label>
+						<div class="col-lg-9">
+							<input type="text" name="namorobairro"
+								ng-model="form.namorobairro" class="form-control">
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div ng-show="isConsult">
 	<table class="table table-striped table-hover ">
 		<thead>
 			<tr>
@@ -22,8 +615,7 @@
 				ng-click="$parent.createOrEditBean(bean.id)">
 				<td>{{bean.nome}}</td>
 				<td>{{bean.email}}</td>
-				<td>{{bean.telefoneresidencial | concatif :
-					bean.telefonecelular}}</td>
+				<td>{{bean.telefoneresidencial | concatif : bean.telefonecelular}}</td>
 			</tr>
 		</tbody>
 	</table>

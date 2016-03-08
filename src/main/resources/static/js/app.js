@@ -46,7 +46,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'pages/students.html',
 		controller : 'StudentController'
 	}).when('/students/:id', {
-		templateUrl : 'pages/studentsForm.html',
+		templateUrl : 'pages/students.html',
 		controller : 'StudentFormController'
 	})
 
@@ -182,6 +182,7 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 		function($scope, StudentService, ApiConsultController) {
 			ApiConsultController.build($scope);
 			StudentService.setSort([ "nome" ]);
+			$scope.isConsult = true;
 			$scope.setApiService(StudentService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
@@ -195,6 +196,7 @@ app.controller('StudentFormController', [
 		'$routeParams',
 		function($scope, StudentService, ApiFormController, $routeParams) {
 			ApiFormController.build($scope);
+			$scope.isConsult = false;
 			$scope.setApiService(StudentService);
 			$scope.consultPath = "/students";
 
