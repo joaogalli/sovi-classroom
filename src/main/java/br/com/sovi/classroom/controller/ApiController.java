@@ -1,6 +1,8 @@
 package br.com.sovi.classroom.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -28,6 +31,8 @@ import com.mongodb.client.result.UpdateResult;
 
 import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest;
 import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest.Entry;
+import br.com.sovi.classroom.entity.User;
+import br.com.sovi.classroom.service.UserService;
 import br.com.sovi.classroom.util.JsonUtils;
 
 /**
@@ -232,6 +237,9 @@ public class ApiController extends AbstractController {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 	}
 
+	@Autowired
+	private UserService userService;
+
 	/**
 	 * SAVE
 	 * @param request
@@ -240,7 +248,8 @@ public class ApiController extends AbstractController {
 	 */
 	@RequestMapping(value = "/*", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> save(HttpServletRequest request, @RequestBody String requestBody) {
+	public ResponseEntity<String> save(HttpServletRequest request, Principal principal,
+			@RequestBody String requestBody) {
 		logger.debug("Saving api document");
 
 		String collectionName = getCollectionName(request);
@@ -250,6 +259,9 @@ public class ApiController extends AbstractController {
 		// The key id is always removed
 		if (document.containsKey("id"))
 			document.remove("id");
+
+		// Create/update metadata
+		createMetadata(collection, document, principal);
 
 		if (document.containsKey("_id")) {
 			UpdateResult updateResult = collection.replaceOne(new Document("_id", document.get("_id")), document);
@@ -263,6 +275,64 @@ public class ApiController extends AbstractController {
 
 		prepareToGoOut(document);
 		return responseBuilder.success(JsonUtils.toJson(document));
+	}
+
+	/**
+	 * @param document
+	 * @param principal
+	 */
+	private void createMetadata(MongoCollection<Document> collection, Document document, Principal principal) {
+		boolean isNew = (document.get("_id") == null);
+
+		ObjectId id = null;
+		Document documentFindById = null;
+		if (!isNew) {
+			id = document.getObjectId("_id");
+			FindIterable<Document> iterable = collection.find(Filters.eq("_id", id));
+			documentFindById = iterable.first();
+		}
+
+		// If there is an old version of this document in the database,
+		// the old metadata must be grabbed to keep creation data.
+		// WARNING: Cannot trust on data coming from client, all metadata must
+		// be from server.
+		Document metadata = null;
+
+		if (documentFindById == null) {
+			metadata = (Document) document.get("metadata");
+		}
+		else {
+			metadata = (Document) documentFindById.get("metadata");
+		}
+
+		if (metadata == null) {
+			logger.info("metadata is null, creating new");
+			metadata = new Document();
+		}
+		
+		// Search for user
+		User user = userService.findUserByUsername(principal.getName());
+		String userId = principal.getName();
+		if (user != null) {
+			userId = user.getId();
+		}
+
+		// Create or update metadata
+		if (metadata.getString("author") == null)
+			metadata.append("author", userId);
+
+		metadata.remove("lastModifier");
+		metadata.append("lastModifier", userId);
+
+		if (metadata.get("creationDate") == null)
+			metadata.append("creationDate", new Date());
+
+		metadata.remove("modificationDate");
+		metadata.append("modificationDate", new Date());
+
+		// Replace
+		document.remove("metadata");
+		document.put("metadata", metadata);
 	}
 
 	private String getCollectionName(HttpServletRequest request) {
