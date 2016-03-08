@@ -45,8 +45,11 @@ app.config([ '$routeProvider', function($routeProvider) {
 	}).when('/students', {
 		templateUrl : 'pages/students.html',
 		controller : 'StudentController'
+	}).when('/students/:id', {
+		templateUrl : 'pages/studentsForm.html',
+		controller : 'StudentFormController'
 	})
-	
+
 	;
 
 } ]);
@@ -174,16 +177,26 @@ app.filter('concatif', function() {
 	};
 });
 
-app.controller('StudentController', [
-		'$scope',
-		'StudentService',
-		'ApiCrudController',
-		function($scope, StudentService, ApiCrudController) {
-			ApiCrudController.build($scope);
+app.controller('StudentController', [ '$scope', 'StudentService',
+		'ApiConsultController',
+		function($scope, StudentService, ApiConsultController) {
+			ApiConsultController.build($scope);
 			StudentService.setSort([ "nome" ]);
 			$scope.setApiService(StudentService);
 			$scope.setPageLength(10);
 			$scope.goPage(0);
+			$scope.formPath = "/students";
+		} ]);
+
+app.controller('StudentFormController', [
+		'$scope',
+		'StudentService',
+		'ApiFormController',
+		'$routeParams',
+		function($scope, StudentService, ApiFormController, $routeParams) {
+			ApiFormController.build($scope);
+			$scope.setApiService(StudentService);
+			$scope.consultPath = "/students";
 
 			$scope.$watch('form', function(newValue) {
 				if (newValue && newValue.datanascimento)
@@ -192,6 +205,11 @@ app.controller('StudentController', [
 
 			$scope.estadoscivis = [ "Solteiro (a)", "Casado (a)", "Viúvo (a)",
 					"Separado (a)" ];
+			
+			if ($routeParams.id !== 'new') {
+				$scope.createOrEditBean($routeParams.id);
+			}
+			
 		} ]);
 
 app.run([ "$rootScope", "$location", function($rootScope, $location) {

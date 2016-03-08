@@ -109,7 +109,7 @@ app.controller('CourseController', [
 						bean.startDate.setSeconds(0);
 				}
 			};
-			
+
 			$scope.$watch('classschedulement.beans', function(newValue) {
 				if (newValue) {
 					for (var i = 0; i <= newValue.length; i++) {
@@ -118,7 +118,7 @@ app.controller('CourseController', [
 							bean.startDate = new Date(bean.startDate);
 							bean.subject = {};
 							bean.module = {};
-							
+
 							(function(bean) {
 								SubjectService.findById(bean.subjectId, function(error, data) {
 									if (error) {
@@ -128,13 +128,15 @@ app.controller('CourseController', [
 									}
 								});
 
-								ModuleService.findById(bean.moduleId, function(error, data) {
-									if (error) {
-										console.error(error);
-									} else {
-										bean.module = data;
-									}
-								});
+								if (bean.moduleId) {
+									ModuleService.findById(bean.moduleId, function(error, data) {
+										if (error) {
+											console.error(error);
+										} else {
+											bean.module = data;
+										}
+									});
+								}
 							}(bean));
 						}
 					}
