@@ -207,11 +207,35 @@ app.controller('StudentFormController', [
 
 			$scope.estadoscivis = [ "Solteiro (a)", "Casado (a)", "Viúvo (a)",
 					"Separado (a)" ];
-			
+
+			$scope.onCpfChange = function() {
+				if ($scope.form.cpf) {
+					StudentService.findQuery({
+						"cpf" : $scope.form.cpf
+					}, function(error, data) {
+						if (error) {
+							console.error(error);
+						} else {
+							if (angular.isArray(data)) {
+								data.some(function(el) {
+									if (el.id === $scope.form.id) {
+										$scope.beanForm.cpf.$setValidity('repeated', true);
+										return true;
+									} else {
+										$scope.beanForm.cpf.$setValidity('repeated', false);
+										return false;
+									}
+								});
+							}
+						}
+					});
+				}
+			};
+
 			if ($routeParams.id !== 'new') {
 				$scope.createOrEditBean($routeParams.id);
 			}
-			
+
 		} ]);
 
 app.run([ "$rootScope", "$location", function($rootScope, $location) {
