@@ -36,6 +36,7 @@
 									});
 								};
 
+								// Find Query
 								var findQuery = function(query, callback, parameters) {
 									var headers = {};
 									if (this.sortString)
@@ -55,7 +56,7 @@
 										console.error(data);
 									});
 								};
-								
+
 								// Find By Id
 								var findById = function(id, callback) {
 									if (id) {
@@ -91,7 +92,8 @@
 									this.sortString = propertiesArray.join();
 								};
 
-								var getNumberOfPages = function(callback, parameters) {
+								// Number of Pages
+								var getNumberOfPages = function(query, callback, parameters) {
 									var headers = {};
 
 									if (parameters && parameters.pageLength) {
@@ -100,10 +102,14 @@
 										callback('Cannot get number of pages without the pageLength parameter.');
 										return;
 									}
+									
+									if (!query)
+										query = {};
 
-									$http.get('/api/' + this.collection + '/numberofpages', {
-										headers : headers
-									}).then(function(response) {
+									$http.post('/api/' + this.collection + '/numberofpages',
+											query, {
+												headers : headers
+											}).then(function(response) {
 										callback(null, response.data);
 									}, function(data) {
 										console.error(data);

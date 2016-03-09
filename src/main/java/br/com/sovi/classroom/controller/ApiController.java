@@ -158,9 +158,16 @@ public class ApiController extends AbstractController {
 		document.append("_id", new Document("$oid", id));
 	}
 
-	@RequestMapping(value = "/*/numberofpages", method = RequestMethod.GET)
+	/**
+	 * Find All
+	 * @param request
+	 * @param requestBody
+	 * @param pageLength
+	 * @return
+	 */
+	@RequestMapping(value = "/*/numberofpages", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> findAll(HttpServletRequest request,
+	public ResponseEntity<String> findAll(HttpServletRequest request, @RequestBody String requestBody,
 			@RequestHeader(value = "page-length", required = false) Integer pageLength) {
 		logger.debug("Find All");
 
@@ -170,7 +177,9 @@ public class ApiController extends AbstractController {
 		int numberOfPages = 1;
 
 		if (pageLength > 0) {
-			long count = collection.count(new Document());
+			Document query = Document.parse(requestBody);
+
+			long count = collection.count(query);
 			numberOfPages = (int) Math.ceil(((double) count) / pageLength);
 		}
 
@@ -309,7 +318,7 @@ public class ApiController extends AbstractController {
 			logger.info("metadata is null, creating new");
 			metadata = new Document();
 		}
-		
+
 		// Search for user
 		User user = userService.findUserByUsername(principal.getName());
 		String userId = principal.getName();

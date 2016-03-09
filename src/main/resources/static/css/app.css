@@ -22,3 +22,7 @@
 	display: inline;
 	margin-left: 40px;
 }
+
+.pointer {
+	cursor: pointer;
+}

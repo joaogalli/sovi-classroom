@@ -24,7 +24,7 @@
 		var update = function() {
 			var self = this;
 
-			this.apiService.getNumberOfPages(function(error, data) {
+			this.apiService.getNumberOfPages(this.query, function(error, data) {
 				if (error) {
 					console.error(error);
 				} else {
@@ -256,7 +256,7 @@
 		var update = function() {
 			var self = this;
 
-			this.apiService.getNumberOfPages(function(error, data) {
+			this.apiService.getNumberOfPages(this.query, function(error, data) {
 				if (error) {
 					console.error(error);
 				} else {

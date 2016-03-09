@@ -187,6 +187,22 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			$scope.setPageLength(10);
 			$scope.goPage(0);
 			$scope.formPath = "/students";
+
+			$scope.isFilterCollapsed = false;
+			
+			$scope.filterForm = {};
+
+			$scope.filter = function() {
+				console.info('filter', $scope.filterForm);
+				$scope.query = {
+					nome : {
+						$regex : $scope.filterForm.nome
+					}
+				};
+				
+				$scope.update();
+			}
+
 		} ]);
 
 app.controller('StudentFormController', [
@@ -217,7 +233,7 @@ app.controller('StudentFormController', [
 						$scope.beanForm.cpf.$setValidity('invalidCpf', false);
 					} else {
 						$scope.beanForm.cpf.$setValidity('invalidCpf', true);
-						
+
 						StudentService.findQuery({
 							"cpf" : $scope.form.cpf
 						}, function(error, data) {
@@ -247,7 +263,6 @@ app.controller('StudentFormController', [
 			if ($routeParams.id !== 'new') {
 				$scope.createOrEditBean($routeParams.id);
 			}
-
 		} ]);
 
 app.run([ "$rootScope", "$location", function($rootScope, $location) {
