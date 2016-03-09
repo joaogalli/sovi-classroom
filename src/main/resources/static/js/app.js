@@ -188,7 +188,7 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			$scope.goPage(0);
 			$scope.formPath = "/students";
 
-			$scope.isFilterCollapsed = false;
+			$scope.isFilterCollapsed = true;
 			
 			$scope.filterForm = {};
 

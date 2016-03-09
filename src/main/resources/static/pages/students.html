@@ -608,26 +608,30 @@
 	</form>
 </div>
 
-<div ng-show="isConsult">
-	<div class="col-xs-12 row">
-		<legend style="cursor: pointer"
-			ng-click="isFilterCollapsed = !isFilterCollapsed">Filtro</legend>
-		<form class="col-xs-12" uib-collapse="isFilterCollapsed" ng-submit="filter()">
-			<div class="col-xs-3">
-				<div class="col-xs-12">
-					<input type="text" name="filterNome" ng-model="filterForm.nome"
-						class="form-control input-md" placeholder="Nome">
-				</div>
+<div class="panel panel-default">
+	<div class="panel-heading pointer"
+		ng-click="isFilterCollapsed = !isFilterCollapsed">
+		Filtro de Consulta <span class="glyphicon"
+			ng-class="{ 'glyphicon-triangle-bottom' : isFilterCollapsed, 'glyphicon-triangle-top' : !isFilterCollapsed}"></span>
+	</div>
+	<div class="panel-body" uib-collapse="isFilterCollapsed">
+		<form ng-submit="filter()">
+			<div class="col-xs-8 col-sm-6 col-md-4" style="padding: 0px;">
+				<input type="text" name="filterNome" ng-model="filterForm.nome"
+					class="form-control input-md" placeholder="Nome">
 			</div>
-			<div class="col-xs-3">
-				<input type="submit" class="btn btn-default btn-md" value="Filtrar"/>
+			<div class="col-xs-2">
+				<button class="btn btn-default btn-md" ng-click="filter()">
+					<span class="glyphicon glyphicon-search"></span> Filtrar
+				</button>
 			</div>
 		</form>
 	</div>
+</div>
 
+<div ng-show="isConsult">
 	<div class="col-xs-12 row">
-		<legend>Consulta</legend>
-		<table class="table table-striped table-hover">
+		<table class="table table-striped table-hover table-bordered">
 			<thead>
 				<tr>
 					<th>Nome</th>
