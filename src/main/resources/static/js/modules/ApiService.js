@@ -79,7 +79,7 @@
 									var json = {
 										entries : entries
 									};
-
+									
 									$http.post('/api/bulkFindById', angular.toJson(json)).then(
 											function(response) {
 												callback(null, response.data);

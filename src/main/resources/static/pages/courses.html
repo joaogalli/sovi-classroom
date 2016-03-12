@@ -132,15 +132,17 @@
 									<th>Nome do Módulo</th>
 									<th>Matéria</th>
 									<th>Data de Referência</th>
+									<th>Alunos</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr style="cursor: pointer"
-									ng-repeat="bean in module.beans | orderBy: 'name'"
-									ng-click="$parent.module.createOrEditBean(bean.id)">
-									<td>{{bean.name}}</td>
+									ng-repeat="bean in module.beans | orderBy: 'name'">
+									<td ng-click="$parent.module.createOrEditBean(bean.id)">{{bean.name}}</td>
 									<td>{{bean.subject.name}}</td>
 									<td>{{bean.referenceDate | date : 'dd/MM/yyyy'}}</td>
+									<td><a ng-click="$parent.module.openStudents(bean)">Ver
+											Alunos</a></td>
 								</tr>
 							</tbody>
 						</table>
@@ -200,7 +202,8 @@
 						<div class="col-xs-6">
 							<button class="btn btn-primary"
 								ng-click="classschedulement.saveForm(beanForm.startDate.$valid)"
-								ng-disabled="classSchedulementForm.$invalid">Salvar Aula</button>
+								ng-disabled="classSchedulementForm.$invalid">Salvar
+								Aula</button>
 							<button class="btn btn-link"
 								ng-click="classschedulement.cancelForm()">Cancelar</button>
 						</div>
