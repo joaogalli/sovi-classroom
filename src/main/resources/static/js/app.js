@@ -48,6 +48,12 @@ app.config([ '$routeProvider', function($routeProvider) {
 	}).when('/students/:id', {
 		templateUrl : 'pages/students.html',
 		controller : 'StudentFormController'
+	}).when('/module/:moduleId/:classSchedulementId', {
+		templateUrl : 'pages/module.html',
+		controller : 'ModuleController'
+	}).when('/module/:moduleId', {
+		templateUrl : 'pages/module.html',
+		controller : 'ModuleController'
 	})
 
 	;
@@ -189,7 +195,7 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			$scope.formPath = "/students";
 
 			$scope.isFilterCollapsed = true;
-			
+
 			$scope.filterForm = {};
 
 			$scope.filter = function() {
@@ -199,7 +205,7 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 						$regex : $scope.filterForm.nome
 					}
 				};
-				
+
 				$scope.update();
 			}
 
