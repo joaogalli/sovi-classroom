@@ -199,7 +199,6 @@ app.controller('StudentController', [ '$scope', 'StudentService',
 			$scope.filterForm = {};
 
 			$scope.filter = function() {
-				console.info('filter', $scope.filterForm);
 				$scope.query = {
 					nome : {
 						$regex : $scope.filterForm.nome
