@@ -1,6 +1,8 @@
 <div class="panel">
 	<div class="panel-body view-header">
-		<h2 class="title">Módulo <b>{{module.name}}</b></h2>
+		<h2 class="title">
+			Módulo <b>{{module.name}}</b>
+		</h2>
 	</div>
 </div>
 
@@ -17,8 +19,19 @@
 
 <div>
 	<legend>Presenças por aulas deste módulo</legend>
+	<div class="button-bar">
+		<button class="btn btn-link btn-sm" ng-click="openStudents(module)">Adicionar
+			ou remover alunos</button>
+	</div>
 
-	<table class="table table-striped table-hover table-bordered">
+	<div ng-if="!students || !students.length"
+		class="alert alert-dismissible alert-warning">
+		<p>Não existem alunos cadastrados nesse módulo, clique no link
+			acima para adicionar alunos.</p>
+	</div>
+
+	<table class="table table-striped table-hover table-bordered"
+		ng-if="students.length">
 		<thead>
 			<tr>
 				<th>Aluno</th>

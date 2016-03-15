@@ -6,10 +6,13 @@ app.controller('ModuleController', [
 		'ClassSchedulementService',
 		'StudentService',
 		'$routeParams',
+		'$uibModal',
+		'$location',
 		function($scope, CourseService, SubjectService, ModuleService,
-				ClassSchedulementService, StudentService, $routeParams) {
+				ClassSchedulementService, StudentService, $routeParams, $uibModal,
+				$location) {
 
-			ModuleService.findById($routeParams.moduleId, function(error, data) {
+			var update = function(error, data) {
 				if (error) {
 					console.error(error);
 					// TODO fazer algo, pois sem módulo não dá para continuar.
@@ -63,7 +66,9 @@ app.controller('ModuleController', [
 					});
 
 				}
-			});
+			};
+
+			ModuleService.findById($routeParams.moduleId, update);
 
 			$scope.changePresence = function(classSchedulement, student) {
 				ClassSchedulementService.save(classSchedulement, function(error, data) {
@@ -71,6 +76,26 @@ app.controller('ModuleController', [
 						console.error(error);
 					else
 						console.info('ok');
+				});
+			}
+
+			// Abre o modal de alunos por módulo
+			$scope.openStudents = function(module) {
+				var modalInstance = $uibModal.open({
+					animation : true,
+					templateUrl : 'templates/studentsByModule.html',
+					controller : 'StudentsByModuleController',
+					size : 'lg',
+					closeable : true,
+					resolve : {
+						module : function() {
+							return module;
+						}
+					}
+				});
+
+				modalInstance.result.then(function(newModule) {
+					ModuleService.findById($routeParams.moduleId, update);
 				});
 			}
 
