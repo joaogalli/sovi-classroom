@@ -39,8 +39,6 @@ app.controller('ModuleController', [
 						if (error)
 							console.error(error);
 						else {
-							console.info('bulk', dataIds);
-
 							$scope.course = dataIds.entries.courses[data.courseId];
 							$scope.subject = dataIds.entries.subjects[data.subjectId];
 							$scope.students = [];
@@ -56,7 +54,6 @@ app.controller('ModuleController', [
 						if (error)
 							console.error(error);
 						else {
-							console.info(data);
 							$scope.classSchedulements = data;
 							$scope.classSchedulements.forEach(function(el) {
 								if (!el.presences)
@@ -69,8 +66,6 @@ app.controller('ModuleController', [
 			});
 
 			$scope.changePresence = function(classSchedulement, student) {
-				console.info('Presenças', classSchedulement.presences);
-
 				ClassSchedulementService.save(classSchedulement, function(error, data) {
 					if (error)
 						console.error(error);

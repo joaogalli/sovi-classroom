@@ -138,8 +138,9 @@
 							<tbody>
 								<tr style="cursor: pointer"
 									ng-repeat="bean in module.beans | orderBy: 'name'">
-									<td ng-click="$parent.module.createOrEditBean(bean.id)">{{bean.name}}</td>
-									<td><a href="#/module/{{bean.id}}">{{bean.subject.name}}</a></td>
+									<td ng-click="$parent.module.createOrEditBean(bean.id)"><a
+										href="#/module/{{bean.id}}">{{bean.name}}</a></td>
+									<td>{{bean.subject.name}}</td>
 									<td>{{bean.referenceDate | date : 'dd/MM/yyyy'}}</td>
 									<td><a ng-click="$parent.module.openStudents(bean)">Ver
 											Alunos</a></td>
@@ -252,8 +253,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr class="pointer"
-				ng-repeat="bean in beans | orderBy: 'name'"
+			<tr class="pointer" ng-repeat="bean in beans | orderBy: 'name'"
 				ng-click="$parent.createOrEditBean(bean.id)">
 				<td>{{bean.name}}</td>
 			</tr>

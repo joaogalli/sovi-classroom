@@ -1,29 +1,41 @@
-<div>
-	<div>Módulo: {{module.name}}</div>
-	<div>Course: {{course.name}}</div>
-	<div>Subject: {{subject.name}}</div>
-
-	<div>
-		<legend>Presenças por aulas deste módulo</legend>
-
-		<table class="table table-striped table-hover table-bordered">
-			<thead>
-				<tr>
-					<th>Aluno</th>
-					<th ng-repeat="class in classSchedulements | orderBy: 'startDate'">Aula {{class.startDate
-						| date: 'dd/MM/yy'}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="bean in students | orderBy: 'nome'">
-					<td>{{bean.nome}}</td>
-					<td ng-repeat="class in classSchedulements | orderBy: 'startDate'">
-						<input type="checkbox" ng-change="changePresence(class, bean)" ng-model="class.presences[bean.id]" >
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
+<div class="panel">
+	<div class="panel-body view-header">
+		<h2 class="title">Módulo <b>{{module.name}}</b></h2>
 	</div>
+</div>
+
+<div class="row col-xs-12">
+	<div class="form-group col-sm-4 col-lg-2" ng-show="course">
+		<label>Curso:</label>
+		<div>{{course.name}}</div>
+	</div>
+	<div class="form-group col-sm-4 col-lg-2" ng-show="subject">
+		<label>Matéria:</label>
+		<div>{{subject.name}}</div>
+	</div>
+</div>
+
+<div>
+	<legend>Presenças por aulas deste módulo</legend>
+
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>Aluno</th>
+				<th ng-repeat="class in classSchedulements | orderBy: 'startDate'">Aula
+					{{class.startDate | date: 'dd/MM/yy'}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="bean in students | orderBy: 'nome'">
+				<td>{{bean.nome}}</td>
+				<td ng-repeat="class in classSchedulements | orderBy: 'startDate'">
+					<input type="checkbox" ng-change="changePresence(class, bean)"
+					ng-model="class.presences[bean.id]">
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
 </div>
+
