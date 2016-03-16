@@ -36,7 +36,7 @@
 				ng-repeat="module in course.modules | orderBy: 'referenceDate'">
 				<div class="panel-heading pointer"
 					ng-click="isCollapsed[module.id] = !isCollapsed[module.id]">
-					<b>Módulo:</b> {{module.name}} <span class="glyphicon"
+					<b>Módulo:</b> <a href="#/module/{{module.id}}">{{module.name}}</a> <span class="glyphicon"
 						ng-class="{ 'glyphicon-triangle-bottom' : isCollapsed[module.id], 'glyphicon-triangle-top' : !isCollapsed[module.id]}">
 					</span>
 				</div>

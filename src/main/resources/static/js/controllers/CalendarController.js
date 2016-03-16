@@ -1,12 +1,13 @@
 app.controller('CalendarController', [
 		'$scope',
 		'$uibModal',
+		'$location',
 		'CourseService',
 		'SubjectService',
 		'ModuleService',
 		'ClassSchedulementService',
-		function($scope, $uibModal, CourseService, SubjectService, ModuleService,
-				ClassSchedulementService) {
+		function($scope, $uibModal, $location, CourseService, SubjectService,
+				ModuleService, ClassSchedulementService) {
 
 			$scope.vm = {};
 			$scope.vm.calendarView = 'month';
@@ -14,8 +15,12 @@ app.controller('CalendarController', [
 			$scope.vm.events = [];
 
 			$scope.vm.eventClicked = function(event) {
-				showClassschedulementDetails(event);
+				showModuleDetails(event);
 			};
+
+			function showModuleDetails(event) {
+				$location.path('module/' + event.data.moduleId);
+			}
 
 			$scope.vm.eventEdited = function(event) {
 				showClassschedulementDetails(event, true);

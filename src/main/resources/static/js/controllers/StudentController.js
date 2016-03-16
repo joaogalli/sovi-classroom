@@ -73,7 +73,6 @@ app.controller('StudentController', [
 							if (error)
 								console.error(error);
 							else {
-								console.log(data);
 								$scope.courses = [];
 								for ( var key in data.entries.courses) {
 									var course = data.entries.courses[key];
