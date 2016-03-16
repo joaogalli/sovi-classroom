@@ -72,10 +72,12 @@ app.controller('ModuleController', [
 
 			$scope.changePresence = function(classSchedulement, student) {
 				ClassSchedulementService.save(classSchedulement, function(error, data) {
-					if (error)
+					if (error) {
 						console.error(error);
-					else
+						classSchedulement.presences[student.id] = !classSchedulement.presences[student.id];
+					} else {
 						console.info('ok');
+					}
 				});
 			}
 
