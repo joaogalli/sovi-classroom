@@ -19,7 +19,7 @@ app.controller('CalendarController', [
 			};
 
 			function showModuleDetails(event) {
-				$location.path('module/' + event.data.moduleId);
+				$location.path('module/' + event.data.moduleId + '/' + event.data.id);
 			}
 
 			$scope.vm.eventEdited = function(event) {

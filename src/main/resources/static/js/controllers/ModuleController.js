@@ -12,6 +12,8 @@ app.controller('ModuleController', [
 				ClassSchedulementService, StudentService, $routeParams, $uibModal,
 				$location) {
 
+			$scope.classSchedulementId = $routeParams.classSchedulementId;
+			
 			var update = function(error, data) {
 				if (error) {
 					console.error(error);

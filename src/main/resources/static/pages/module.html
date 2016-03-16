@@ -1,7 +1,8 @@
 <div class="panel">
 	<div class="panel-body view-header">
 		<h2 class="title">
-			Módulo <b>{{module.name}}</b>
+		<span class="viewtitle-soft">
+			Módulo</span> <b>{{module.name}}</b>
 		</h2>
 	</div>
 </div>
@@ -17,7 +18,7 @@
 	</div>
 </div>
 
-<div>
+<div style="padding-top: 80px;">
 	<legend>Presenças por aulas deste módulo</legend>
 	<div class="button-bar">
 		<button class="btn btn-link btn-sm" ng-click="openStudents(module)">Adicionar
@@ -35,14 +36,16 @@
 		<thead>
 			<tr>
 				<th>Aluno</th>
-				<th ng-repeat="class in classSchedulements | orderBy: 'startDate'">Aula
+				<th ng-repeat="class in classSchedulements | orderBy: 'startDate'"
+				ng-class="{ 'active' : classSchedulementId === class.id}">Aula
 					{{class.startDate | date: 'dd/MM/yy'}}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="bean in students | orderBy: 'nome'">
 				<td>{{bean.nome}}</td>
-				<td ng-repeat="class in classSchedulements | orderBy: 'startDate'">
+				<td ng-repeat="class in classSchedulements | orderBy: 'startDate'"
+					ng-class="{ 'active' : classSchedulementId === class.id}">
 					<input type="checkbox" ng-change="changePresence(class, bean)"
 					ng-model="class.presences[bean.id]">
 				</td>
