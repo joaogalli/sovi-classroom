@@ -44,7 +44,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 		controller : 'CourseController'
 	}).when('/students', {
 		templateUrl : 'pages/students.html',
-		controller : 'StudentController'
+		controller : 'StudentsController'
 	}).when('/students/:id', {
 		templateUrl : 'pages/students.html',
 		controller : 'StudentFormController'
@@ -54,6 +54,9 @@ app.config([ '$routeProvider', function($routeProvider) {
 	}).when('/module/:moduleId', {
 		templateUrl : 'pages/module.html',
 		controller : 'ModuleController'
+	}).when('/student/:studentId', {
+		templateUrl : 'pages/student.html',
+		controller : 'StudentController'
 	})
 
 	;
@@ -183,7 +186,7 @@ app.filter('concatif', function() {
 	};
 });
 
-app.controller('StudentController', [ '$scope', 'StudentService',
+app.controller('StudentsController', [ '$scope', 'StudentService',
 		'ApiConsultController',
 		function($scope, StudentService, ApiConsultController) {
 			ApiConsultController.build($scope);

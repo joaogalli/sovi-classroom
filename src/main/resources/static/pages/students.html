@@ -608,7 +608,7 @@
 	</form>
 </div>
 
-<div class="panel panel-default">
+<div class="panel panel-default" ng-show="isConsult">
 	<div class="panel-heading pointer"
 		ng-click="isFilterCollapsed = !isFilterCollapsed">
 		Filtro de Consulta <span class="glyphicon"
@@ -637,6 +637,7 @@
 					<th>Nome</th>
 					<th>E-Mail</th>
 					<th>Telefone</th>
+					<th>Relatório</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -646,6 +647,7 @@
 					<td>{{bean.email}}</td>
 					<td>{{bean.telefoneresidencial | concatif :
 						bean.telefonecelular}}</td>
+					<td><a href="#/student/{{bean.id}}">Ver relatório</a></td>
 				</tr>
 			</tbody>
 		</table>

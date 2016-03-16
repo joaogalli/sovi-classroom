@@ -1,0 +1,69 @@
+<div class="panel">
+	<div class="panel-body view-header">
+		<h2 class="title">
+			<span class="viewtitle-soft">Aluno</span> <b>{{student.nome}}</b> <a
+			 class="btn btn-link btn-md"
+				href="#/students/{{student.id}}">Editar</a>
+		</h2>
+	</div>
+</div>
+
+<div class="row col-xs-12">
+	<div class="form-group col-sm-4 col-lg-2">
+		<label>Telefone Residencial:</label>
+		<div>{{student.telefoneresidencial}}</div>
+	</div>
+	<div class="form-group col-sm-4 col-lg-2">
+		<label>E-Mail:</label>
+		<div>{{student.email}}</div>
+	</div>
+</div>
+
+<div>
+	<legend>Relatório de Cursos</legend>
+
+	<div class="panel panel-default" ng-repeat="course in courses">
+		<div class="panel-heading pointer"
+			ng-click="isCollapsed[course.id] = !isCollapsed[course.id]">
+			<b>Curso:</b> {{course.name}} <span class="glyphicon"
+				ng-class="{ 'glyphicon-triangle-bottom' : isCollapsed[course.id], 'glyphicon-triangle-top' : !isCollapsed[course.id]}">
+			</span>
+		</div>
+		<div class="panel-body" uib-collapse="isCollapsed[course.id]"
+			expanding="expandingCourse(course)">
+
+			<div class="panel panel-default"
+				ng-repeat="module in course.modules | orderBy: 'referenceDate'">
+				<div class="panel-heading pointer"
+					ng-click="isCollapsed[module.id] = !isCollapsed[module.id]">
+					<b>Módulo:</b> {{module.name}} <span class="glyphicon"
+						ng-class="{ 'glyphicon-triangle-bottom' : isCollapsed[module.id], 'glyphicon-triangle-top' : !isCollapsed[module.id]}">
+					</span>
+				</div>
+				<div class="panel-body" uib-collapse="isCollapsed[module.id]"
+					expanding="expandingModule(module)">
+					<table class="table table-striped table-hover table-bordered">
+						<thead>
+							<tr>
+								<th>Aulas</th>
+								<th>Presença</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								ng-repeat="class in module.classSchedulements | orderBy: 'startDate'">
+								<td>{{class.startDate | date: 'dd/MM/yy'}}</td>
+								<td><span ng-hide="hasPresence(class)"
+									class="label label-danger">Não</span> <span
+									ng-show="hasPresence(class)" class="label label-success">Sim</span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+

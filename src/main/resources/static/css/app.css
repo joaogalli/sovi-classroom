@@ -10,7 +10,6 @@
 }
 
 .view-header {
-	
 }
 
 .view-header .title {
@@ -25,4 +24,9 @@
 
 .pointer {
 	cursor: pointer;
+}
+
+.viewtitle-soft {
+	color: #CCC;
+	font-size: 22px;
 }
