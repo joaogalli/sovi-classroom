@@ -33,8 +33,8 @@
 			</ng-form>
 
 			<div class="form-group" style="padding: 10px" ng-show="form.id">
-				<uib-tabset> <uib-tab select="subjectTabSelected()"
-					heading="Matérias">
+				<uib-tabset> <!-- SUBJECT TAB --> <uib-tab
+					select="subjectTabSelected()" heading="Matérias">
 				<div style="padding-top: 10px">
 					<div class="form-group" ng-hide="subject.isConsult">
 						<label class="col-xs-2 control-label">Nome da Matéria</label>
@@ -79,6 +79,7 @@
 				</uib-tab> <!-- Modulos --> <uib-tab select="moduleTabSelected()"
 					heading="Módulos">
 				<div style="padding-top: 10px">
+					<ng-form name="moduleForm">
 					<div ng-hide="module.isConsult">
 						<div class="form-group">
 							<label class="col-xs-2 control-label">Nome do Módulo</label>
@@ -90,7 +91,8 @@
 						<div class="form-group">
 							<label class="col-xs-2 control-label">Matéria</label>
 							<div class="col-xs-4">
-								<select ng-model="module.form.subjectId" class="form-control">
+								<select name="moduleSubject" ng-model="module.form.subjectId"
+									class="form-control" ng-required="form.id">
 									<option ng-repeat="bean in module.subjects" value="{{bean.id}}">{{bean.name}}</option>
 								</select>
 							</div>
@@ -98,7 +100,8 @@
 						<div class="form-group">
 							<label class="col-xs-2 control-label">Data de Referência</label>
 							<div class="col-xs-4 input-group">
-								<input type="text" class="form-control" uib-datepicker-popup
+								<input type="text" class="form-control"
+									uib-datepicker-popup="dd/MM/yyyy"
 									ng-model="module.form.referenceDate"
 									is-open="module.referenceDatePopup.opened" min-date="minDate"
 									max-date="maxDate" datepicker-options="dateOptions"
@@ -114,12 +117,12 @@
 
 						<div class="col-xs-6">
 							<button class="btn btn-primary"
-								ng-click="module.saveForm(beanForm.moduleName.$valid)"
-								ng-disabled="beanForm.moduleName.$invalid">Salvar
-								Módulo</button>
+								ng-click="module.saveForm(moduleForm.$valid)"
+								ng-disabled="moduleForm.$invalid">Salvar Módulo</button>
 							<button class="btn btn-link" ng-click="module.cancelForm()">Cancelar</button>
 						</div>
 					</div>
+					</ng-form>
 
 					<div ng-show="module.isConsult">
 						<div class="btn-toolbar">
@@ -159,7 +162,7 @@
 							<label class="col-xs-2 control-label">Matéria</label>
 							<div class="col-xs-4">
 								<select ng-model="classschedulement.form.subjectId"
-									class="form-control" required>
+									class="form-control" ng-required="form.id">
 									<option ng-repeat="bean in classschedulement.subjects"
 										value="{{bean.id}}">{{bean.name}}</option>
 								</select>
@@ -169,7 +172,7 @@
 							<label class="col-xs-2 control-label">Módulo</label>
 							<div class="col-xs-4">
 								<select ng-model="classschedulement.form.moduleId"
-									class="form-control">
+									class="form-control" ng-required="form.id">
 									<option ng-repeat="bean in classschedulement.modules"
 										value="{{bean.id}}">{{bean.name}}</option>
 								</select>
@@ -178,7 +181,8 @@
 						<div class="form-group">
 							<label class="col-xs-2 control-label">Data da Aula</label>
 							<div class="col-xs-4 input-group">
-								<input type="text" class="form-control" uib-datepicker-popup
+								<input type="text" class="form-control"
+									uib-datepicker-popup="dd/MM/yyyy"
 									ng-model="classschedulement.form.startDate"
 									is-open="classschedulement.startDatePopup.opened"
 									min-date="minDate" max-date="maxDate"
