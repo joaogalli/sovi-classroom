@@ -278,7 +278,9 @@ app.run([ "$rootScope", "$location", function($rootScope, $location) {
 		// We can catch the error thrown when the $requireAuth promise is
 		// rejected
 		// and redirect the user back to the home page
-		if (error.toString().indexOf('401 Unauthorized') > -1) {
+		console.info('error', error.toString());
+		
+		if (error.toString().indexOf('Unauthorized') > -1) {
 			$location.path("/login");
 			$rootScope.authenticated = false;
 
