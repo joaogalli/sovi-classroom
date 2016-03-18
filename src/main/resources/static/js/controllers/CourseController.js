@@ -9,6 +9,19 @@ app.controller('CourseController', [
 		'ClassSchedulementService',
 		function($scope, $uibModal, CourseService, SubjectService, ModuleService,
 				StudentService, ApiCrudController, ClassSchedulementService) {
+
+			var errorInterceptor = {
+				intercept : function(data) {
+					console.info('inside interceptor', data);
+				}
+			};
+
+			CourseService.addErrorInterceptor(errorInterceptor);
+
+			$scope.showFormError = function() {
+				console.info('showFormError()')
+			};
+			
 			// Course Crud config
 			ApiCrudController.build($scope);
 			CourseService.setSort([ "name" ]);

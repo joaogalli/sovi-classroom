@@ -13,6 +13,7 @@
 										callback(null, response.data);
 									}, function(data) {
 										callback(data);
+										interceptError(data);
 									});
 								};
 
@@ -32,7 +33,8 @@
 									}).then(function(response) {
 										callback(null, response.data);
 									}, function(data) {
-										console.error(data);
+										callback(data);
+										interceptError(data);
 									});
 								};
 
@@ -53,7 +55,8 @@
 									}).then(function(response) {
 										callback(null, response.data);
 									}, function(data) {
-										console.error(data);
+										callback(data);
+										interceptError(data);
 									});
 								};
 
@@ -65,7 +68,8 @@
 											$http.get(url).then(function(response) {
 												callback(null, response.data);
 											}, function(data) {
-												console.error(data);
+												callback(data);
+												interceptError(data);
 											});
 										} else {
 											return $http.get(url);
@@ -85,6 +89,7 @@
 												callback(null, response.data);
 											}, function(data) {
 												callback(data);
+												interceptError(data);
 											});
 								};
 
@@ -112,7 +117,21 @@
 											}).then(function(response) {
 										callback(null, response.data);
 									}, function(data) {
-										console.error(data);
+										callback(data);
+										interceptError(data);
+									});
+								}
+								
+								var errorInterceptors = [];
+								
+								var addErrorInterceptor = function(errorInterceptor) {
+									errorInterceptors.push(errorInterceptor);
+								}
+								
+								function interceptError(data) {
+									console.info('intercepting');
+									errorInterceptors.forEach(function(el) {
+										el.intercept(data);
 									});
 								}
 
@@ -125,7 +144,8 @@
 									findById : findById,
 									bulkFindById : bulkFindById,
 									setSort : setSort,
-									getNumberOfPages : getNumberOfPages
+									getNumberOfPages : getNumberOfPages,
+									addErrorInterceptor : addErrorInterceptor
 								};
 
 								return {
