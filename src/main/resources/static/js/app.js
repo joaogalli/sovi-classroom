@@ -106,8 +106,101 @@ app.controller('NavigationController', [ '$scope', '$rootScope',
 			});
 		} ]);
 
-app.controller('HomeController', [ '$scope', function($scope) {
-} ]);
+app.controller('HomeController', [
+		'$scope',
+		'$rootScope',
+		'$uibModal',
+		'ClassSchedulementService',
+		'ModuleService',
+		'SubjectService',
+		function($scope, $rootScope, $uibModal, ClassSchedulementService, ModuleService,
+				SubjectService) {
+			$rootScope.$watch('authenticated', function(newValue) {
+				$scope.isAuthenticated = newValue;
+			});
+			
+			$scope.createClassSchedulement = function() {
+				var modalInstance = $uibModal.open({
+					animation : true,
+					templateUrl : 'templates/classSchedulementDetails.html',
+					controller : 'ClassSchedulementDetailsController',
+					size : 'md',
+					resolve : {
+						classSchedulement : function() {
+							return {
+								startDate : new Date()
+							};
+						},
+						isEdition : function() {
+							return true
+						}
+					}
+				});
+
+				modalInstance.result.then(function(selectedItem) {
+					updateClassSchedulements();
+				});
+			};
+
+			function updateClassSchedulements() {
+				$scope.classSchedulements = [];
+
+				findClassSchedulementsQuery({
+					'startDate' : {
+						$lte : new Date()
+					}
+				}, true);
+
+				findClassSchedulementsQuery({
+					'startDate' : {
+						$gte : new Date()
+					}
+				}, false);
+			}
+
+			updateClassSchedulements();
+
+			function findClassSchedulementsQuery(query, overpast) {
+				ClassSchedulementService.findQuery(query, function(error, data) {
+					if (error) {
+						console.error(error);
+					} else {
+						data.forEach(function(el) {
+							el.overpast = overpast;
+							$scope.classSchedulements.push(el);
+							fillModule(el);
+						});
+					}
+				}, {
+					page : 0,
+					pageLength : 3
+				});
+			}
+
+			function fillModule(classSchedulement) {
+				ModuleService.findById(classSchedulement.moduleId,
+						function(error, data) {
+							if (error)
+								console.error(error);
+							else {
+								classSchedulement.module = data;
+								fillSubject(classSchedulement);
+							}
+						});
+			}
+
+			function fillSubject(classSchedulement) {
+				SubjectService.findById(classSchedulement.module.subjectId, function(
+						error, data) {
+					if (error)
+						console.error(error);
+					else {
+						classSchedulement.subject = data;
+					}
+				});
+			}
+
+		} ]);
 
 app.controller('RegisterController', [ '$scope', 'RegisterService',
 		'$location', function($scope, RegisterService, $location) {
@@ -161,7 +254,7 @@ app.controller('LoginController', [
 									$location.path($rootScope.nextLoadedTemplateUrl);
 									$rootScope.nextLoadedTemplateUrl = null;
 								} else
-									$location.url('dashboard');
+									$location.url('/');
 							} else {
 								$scope.errorMessage = error;
 							}
@@ -279,7 +372,7 @@ app.run([ "$rootScope", "$location", function($rootScope, $location) {
 		// rejected
 		// and redirect the user back to the home page
 		console.info('error', error.toString());
-		
+
 		if (error.toString().indexOf('Unauthorized') > -1) {
 			$location.path("/login");
 			$rootScope.authenticated = false;
