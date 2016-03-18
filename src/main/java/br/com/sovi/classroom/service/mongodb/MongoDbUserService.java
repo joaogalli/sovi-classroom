@@ -15,6 +15,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
+import br.com.sovi.classroom.SystemConstants;
 import br.com.sovi.classroom.entity.User;
 import br.com.sovi.classroom.error.RegisterUserError;
 import br.com.sovi.classroom.exception.ValidationException;
@@ -34,7 +35,7 @@ public class MongoDbUserService implements UserService {
 	@PostConstruct
 	private void init() {
 		// Criar service para abstrair o mongodb
-		collection = new MongoClient().getDatabase("test").getCollection("users");
+		collection = new MongoClient().getDatabase(SystemConstants.MONGODB_SCHEMA).getCollection("users");
 	}
 
 	public User findUserById(String id) {

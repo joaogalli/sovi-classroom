@@ -140,8 +140,9 @@
 							</thead>
 							<tbody>
 								<tr style="cursor: pointer"
-									ng-repeat="bean in module.beans | orderBy: 'name'">
-									<td ng-click="$parent.module.createOrEditBean(bean.id)"><a
+									ng-repeat="bean in module.beans | orderBy: 'name'"
+									 ng-click="$parent.module.createOrEditBean(bean.id)">
+									<td><a
 										href="#/module/{{bean.id}}">{{bean.name}}</a></td>
 									<td>{{bean.subject.name}}</td>
 									<td>{{bean.referenceDate | date : 'dd/MM/yyyy'}}</td>

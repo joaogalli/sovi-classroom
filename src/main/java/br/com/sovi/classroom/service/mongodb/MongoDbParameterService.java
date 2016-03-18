@@ -10,6 +10,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
+import br.com.sovi.classroom.SystemConstants;
 import br.com.sovi.classroom.service.ParameterService;
 
 /**
@@ -23,7 +24,7 @@ public class MongoDbParameterService implements ParameterService {
 	@PostConstruct
 	private void init() {
 		// Criar service para abstrair o mongodb
-		collection = new MongoClient().getDatabase("test").getCollection("parameters");
+		collection = new MongoClient().getDatabase(SystemConstants.MONGODB_SCHEMA).getCollection("parameters");
 	}
 
 	@Override

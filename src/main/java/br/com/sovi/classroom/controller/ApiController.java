@@ -29,6 +29,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
 
+import br.com.sovi.classroom.SystemConstants;
 import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest;
 import br.com.sovi.classroom.controller.bean.BulkFindByIdRequest.Entry;
 import br.com.sovi.classroom.entity.User;
@@ -49,7 +50,7 @@ public class ApiController extends AbstractController {
 	private void init() {
 		// Criar service para abstrair o mongodb
 		MongoClient mongoClient = new MongoClient();
-		db = mongoClient.getDatabase("test");
+		db = mongoClient.getDatabase(SystemConstants.MONGODB_SCHEMA);
 	}
 
 	@RequestMapping(value = "/bulkFindById", method = RequestMethod.POST)
