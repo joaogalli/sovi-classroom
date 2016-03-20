@@ -34,10 +34,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 		.and().authorizeRequests()
 
-		.antMatchers("/", "/index.html", "/locales/**", "/bootstrap/**", "/js/**", "/css/**", "/fonts/**")
-				.permitAll()
-				
-		.antMatchers("/pages/login.html", "/pages/home.html", "/pages/register.html").permitAll()		
+		.antMatchers("/", "/index.html", "/locales/**", "/bootstrap/**", "/js/**", "/bower_components/**", "/css/**",
+				"/fonts/**").permitAll()
+
+		.antMatchers("/pages/login.html", "/pages/home.html", "/pages/register.html").permitAll()
 
 		.antMatchers("/registernewuser", "/param/**").permitAll()
 
