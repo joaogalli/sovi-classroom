@@ -22,7 +22,7 @@
 					<a href="#/module/{{class.moduleId}}/{{class.id}}"
 						class="list-group-item"
 						ng-repeat="class in classSchedulements | orderBy: 'startDate'"
-						ng-class="{ 'overpast' : class.overpast }"> {{class.startDate
+						ng-class="{ 'overpast' : !class.overpast }"> {{class.startDate
 						| date: 'HH:mm dd/MM/yyyy'}} - {{class.subject.name}} </a>
 				</div>
 				<button class="btn btn-link" ng-click="createClassSchedulement()">Criar
