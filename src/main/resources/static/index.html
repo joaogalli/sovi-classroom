@@ -7,8 +7,8 @@
 	content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <!-- Bootstrap -->
-<link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-<link href="css/spacelab.css" rel="stylesheet">
+<link href="bower_components/bootstrap/dist/css/bootstrap.css"
+	rel="stylesheet">
 <link href="css/app.css" rel="stylesheet">
 
 <!-- Angular -->
@@ -63,13 +63,17 @@
 label {
 	font-weight: bold;
 }
+
+body {
+	padding-top: 70px;
+}
 </style>
 </head>
 
 <body ng-app="app" ng-cloak class="ng-cloak">
-	<div class="container">
-		<nav class="navbar navbar-default"
-			ng-controller="NavigationController">
+	<nav class="navbar navbar-default navbar-fixed-top"
+		ng-controller="NavigationController">
+		<div class="container">
 			<div class="container-fluid">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
@@ -117,8 +121,10 @@ label {
 				<!-- /.navbar-collapse -->
 			</div>
 			<!-- /.container-fluid -->
-		</nav>
+		</div>
+	</nav>
 
+	<div class="container">
 		<div ng-view></div>
 	</div>
 </body>
