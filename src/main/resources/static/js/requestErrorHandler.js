@@ -4,16 +4,16 @@ var specificallyHandleInProgress = false;
 // Para fazer um request http sem passar por aqui:
 // # 1. Injetar RequestErrorHandler no Controller...
 // RequestsErrorHandler.specificallyHandled(
-//    function() {
+// function() {
 // # 2. passar a Promise do http
-//        $q.all({foo: FooService.fetch(), bar: BarService.fetch()}).then(
-//            function() { /* Handle success */ },
-//            function() { /* Handle specific errors */ }
-//        );
-//    }
-//);
+// $q.all({foo: FooService.fetch(), bar: BarService.fetch()}).then(
+// function() { /* Handle success */ },
+// function() { /* Handle specific errors */ }
+// );
+// }
+// );
 
-app.factory('RequestsErrorHandler', ['$q', '$location', function($q, $location) {
+app.factory('RequestsErrorHandler', ['$rootScope', '$q', '$location', function($rootScope, $q, $location) {
   return {
       // --- The user's API for claiming responsiblity for requests ---
       specificallyHandled: function(specificallyHandledBlock) {
@@ -35,6 +35,7 @@ app.factory('RequestsErrorHandler', ['$q', '$location', function($q, $location) 
           	console.error('generic error handler', rejection);
           	
           	if (rejection.status === 401) {
+          		$rootScope.nextLoadedTemplateUrl = $location.path();
           		$location.path('/login');
           	}
           	
