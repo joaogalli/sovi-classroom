@@ -57,9 +57,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 	}).when('/student/:studentId', {
 		templateUrl : 'pages/student.html',
 		controller : 'StudentController'
-	})
-
-	;
+	});
 
 } ]);
 
@@ -113,12 +111,12 @@ app.controller('HomeController', [
 		'ClassSchedulementService',
 		'ModuleService',
 		'SubjectService',
-		function($scope, $rootScope, $uibModal, ClassSchedulementService, ModuleService,
-				SubjectService) {
+		function($scope, $rootScope, $uibModal, ClassSchedulementService,
+				ModuleService, SubjectService) {
 			$rootScope.$watch('authenticated', function(newValue) {
 				$scope.isAuthenticated = newValue;
 			});
-			
+
 			$scope.createClassSchedulement = function() {
 				var modalInstance = $uibModal.open({
 					animation : true,
