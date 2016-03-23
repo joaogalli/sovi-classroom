@@ -141,9 +141,8 @@
 							<tbody>
 								<tr style="cursor: pointer"
 									ng-repeat="bean in module.beans | orderBy: 'name'"
-									 ng-click="$parent.module.createOrEditBean(bean.id)">
-									<td><a
-										href="#/module/{{bean.id}}">{{bean.name}}</a></td>
+									ng-click="$parent.module.createOrEditBean(bean.id)">
+									<td><a href="#/module/{{bean.id}}">{{bean.name}}</a></td>
 									<td>{{bean.subject.name}}</td>
 									<td>{{bean.referenceDate | date : 'dd/MM/yyyy'}}</td>
 									<td><a ng-click="$parent.module.openStudents(bean)">Ver
@@ -205,11 +204,21 @@
 							</div>
 						</div>
 
+						<div class="alert alert-dismissible alert-success col-xs-8" ng-show="classschedulement.saveContinueSuccess">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							<strong>Sucesso!</strong> A aula foi gravada, mas os dados foram
+							mantidos para você cadastrar uma nova aula.</a>.
+						</div>
+
 						<div class="col-xs-6">
 							<button class="btn btn-primary"
-								ng-click="classschedulement.saveForm(beanForm.startDate.$valid)"
+								ng-click="classschedulement.saveForm(classSchedulementForm.$valid)"
 								ng-disabled="classSchedulementForm.$invalid">Salvar
 								Aula</button>
+							<button class="btn"
+								ng-click="classschedulement.saveAndContinueForm(classSchedulementForm.$valid)"
+								ng-disabled="classSchedulementForm.$invalid">Salvar e
+								continuar</button>
 							<button class="btn btn-link"
 								ng-click="classschedulement.cancelForm()">Cancelar</button>
 						</div>

@@ -166,6 +166,11 @@ app.controller('CourseController', [
 				}
 			});
 
+			// On show form
+			$scope.classschedulement.onFormVisible = function() {
+				$scope.classschedulement.saveContinueSuccess = false;
+			};
+
 			$scope.$watch('classschedulement.form', function(newValue) {
 				if (newValue) {
 					if (newValue.startDate) {
@@ -185,6 +190,41 @@ app.controller('CourseController', [
 					});
 				}
 			});
+
+			$scope.classschedulement.saveContinue = false;
+
+			// Save and continue
+			$scope.classschedulement.saveAndContinueForm = function(valid) {
+				console.log('saveAndContinueForm', valid);
+				if (valid) {
+					$scope.classschedulement.saveContinue = true;
+					$scope.classschedulement.saveForm(valid);
+				}
+			};
+
+			$scope.classschedulement.afterSaveForm = function(savedBean) {
+				console.info('afterSaveForm', $scope.classschedulement.saveContinue)
+				if (!$scope.classschedulement.saveContinue) {
+					this.form = {};
+					this.showConsult(true);
+				} else {
+					var copy = {
+						subjectId : $scope.classschedulement.form.subjectId,
+						moduleId : $scope.classschedulement.form.moduleId,
+						startDate : $scope.classschedulement.form.startDate
+					};
+
+					$scope.classschedulement.form = copy;
+					$scope.classschedulement.saveContinue = false;
+					$scope.classschedulement.saveContinueSuccess = true;
+				}
+			}
+
+			$scope.$watch('classschedulement.saveContinueSuccess',
+					function(newValue) {
+						console.info('$watch.classschedulement.saveContinueSuccess',
+								newValue);
+					});
 
 			// Quando o subject é escolhido, busca os módulos disponíveis
 			$scope.$watch('classschedulement.form.subjectId', function(newValue) {

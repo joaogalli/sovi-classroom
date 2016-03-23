@@ -19,7 +19,11 @@
 
 		var showForm = function() {
 			this.isConsult = false;
+			this.onFormVisible();
 		}
+
+		var onFormVisible = function() {
+		};
 
 		var update = function() {
 			var self = this;
@@ -121,6 +125,7 @@
 
 		this.numberOfPages = new Array(1);
 		this.isConsult = true;
+		this.controllerScope = null;
 
 		var self = {
 			isConsult : this.isConsult,
@@ -134,6 +139,7 @@
 			setApiService : setApiService,
 			showConsult : showConsult,
 			showForm : showForm,
+			onFormVisible : onFormVisible,
 			update : update,
 			createOrEditBean : createOrEditBean,
 			preSaveForm : preSaveForm,
