@@ -19,14 +19,14 @@
 
 <div style="padding-top: 80px;">
 	<legend>Presenças por aulas deste módulo</legend>
-	<div class="button-bar">
+	<div class="row">
 		<button class="btn btn-link btn-sm" ng-click="openStudents(module)">
 			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			Adicionar ou remover alunos
 		</button>
 	</div>
 
-	<div ng-if="!students || !students.length"
+	<div ng-if="studentsLoaded && (!students || !students.length)"
 		class="alert alert-dismissible alert-warning">
 		<p>Não existem alunos cadastrados nesse módulo, clique no link
 			acima para adicionar alunos.</p>
@@ -38,17 +38,21 @@
 			<tr>
 				<th>Aluno</th>
 				<th ng-repeat="class in classSchedulements | orderBy: 'startDate'"
-					ng-class="{ 'active' : classSchedulementId === class.id}">Aula
+					ng-class="{ 'info' : classSchedulementId === class.id}">Aula
 					{{class.startDate | date: 'dd/MM/yy'}}</th>
+				<th><a class="pointer" ng-click="createClassSchedulement()"><span
+						class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+						Adicionar Aula</a></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="bean in students | orderBy: 'nome'">
 				<td>{{bean.nome}}</td>
 				<td ng-repeat="class in classSchedulements | orderBy: 'startDate'"
-					ng-class="{ 'active' : classSchedulementId === class.id}"><input
+					ng-class="{ 'info' : classSchedulementId === class.id}"><input
 					type="checkbox" ng-change="changePresence(class, bean)"
 					ng-model="class.presences[bean.id]"></td>
+				<td></td>
 			</tr>
 		</tbody>
 	</table>

@@ -15,6 +15,8 @@ app
 								ClassSchedulementService, StudentService, $routeParams,
 								$uibModal, $location) {
 
+							$scope.studentsLoaded = false;
+
 							$scope.classSchedulementId = $routeParams.classSchedulementId;
 
 							var update = function(error, data) {
@@ -55,6 +57,7 @@ app
 														else {
 															$scope.course = dataIds.entries.courses[data.courseId];
 															$scope.subject = dataIds.entries.subjects[data.subjectId];
+															$scope.studentsLoaded = true;
 															$scope.students = [];
 															for ( var key in dataIds.entries.students) {
 																$scope.students
@@ -115,5 +118,31 @@ app
 									ModuleService.findById($routeParams.moduleId, update);
 								});
 							}
+
+							$scope.createClassSchedulement = function() {
+								var modalInstance = $uibModal.open({
+									animation : true,
+									templateUrl : 'templates/classSchedulementDetails.html',
+									controller : 'ClassSchedulementDetailsController',
+									size : 'md',
+									resolve : {
+										classSchedulement : function() {
+											return {
+												courseId: $scope.course.id,
+												subjectId: $scope.subject.id,
+												moduleId: $scope.module.id,
+												startDate : new Date()
+											};
+										},
+										isEdition : function() {
+											return true
+										}
+									}
+								});
+
+								modalInstance.result.then(function(selectedItem) {
+									ModuleService.findById($routeParams.moduleId, update);
+								});
+							};
 
 						} ]);
