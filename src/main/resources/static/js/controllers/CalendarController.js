@@ -78,6 +78,29 @@ app.controller('CalendarController', [
 				console.info('on-timespan-click');
 			};
 
+			$scope.createClassSchedulement = function() {
+				var modalInstance = $uibModal.open({
+					animation : true,
+					templateUrl : 'templates/classSchedulementDetails.html',
+					controller : 'ClassSchedulementDetailsController',
+					size : 'md',
+					resolve : {
+						classSchedulement : function() {
+							return {
+								startDate : new Date()
+							};
+						},
+						isEdition : function() {
+							return true
+						}
+					}
+				});
+
+				modalInstance.result.then(function(selectedItem) {
+					updateClassSchedulements();
+				});
+			};
+
 		} ]);
 
 app.controller('ClassSchedulementDetailsController', [

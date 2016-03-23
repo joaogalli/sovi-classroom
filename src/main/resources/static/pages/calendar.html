@@ -1,26 +1,35 @@
 
 <div class="row">
-<!-- 	<div class="col-md-1 row">
+	<!-- 	<div class="col-md-1 row">
 		<button class="btn btn-success">Novo Evento</button>
 	</div>
- -->	<div class="col-sm-4 text-left">
+ -->
+	<div class="col-sm-5 col-md-4 text-left">
 		<div class="btn-group">
 			<button class="btn btn-primary" mwl-date-modifier date="vm.viewDate"
-				decrement="vm.calendarView">Anterior</button>
+				decrement="vm.calendarView">
+				<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			</button>
 			<button class="btn btn-default" mwl-date-modifier date="vm.viewDate"
 				set-to-today>Hoje</button>
 			<button class="btn btn-primary" mwl-date-modifier date="vm.viewDate"
-				increment="vm.calendarView">Próximo</button>
+				increment="vm.calendarView">
+				<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			</button>
 		</div>
+		<button class="btn btn-success" ng-click="createClassSchedulement()">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			Criar aula
+		</button>
 	</div>
 
 	<!-- <br class="visible-xs visible-sm"> -->
 
-	<div class="col-sm-4 text-center vtop">
+	<div class="col-sm-2 col-md-4 text-center vtop">
 		<h4>{{vm.calendarTitle}}</h4>
 	</div>
 
-	<div class="col-sm-4 text-right">
+	<div class="col-sm-5 col-md-4 text-right">
 		<div class="btn-group">
 			<label class="btn btn-primary" ng-model="vm.calendarView"
 				uib-btn-radio="'year'">Ano</label> <label class="btn btn-primary"
