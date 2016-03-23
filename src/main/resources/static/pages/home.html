@@ -25,8 +25,10 @@
 						ng-class="{ 'overpast' : !class.overpast }"> {{class.startDate
 						| date: 'HH:mm dd/MM/yyyy'}} - {{class.subject.name}} </a>
 				</div>
-				<button class="btn btn-link" ng-click="createClassSchedulement()">Criar
-					aula</button>
+				<button class="btn btn-link" ng-click="createClassSchedulement()">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Criar
+					aula
+				</button>
 			</div>
 		</div>
 	</div>
