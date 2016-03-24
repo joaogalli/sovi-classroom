@@ -4,6 +4,11 @@
 	// CrudController
 	app.factory('ApiCrudController', [ function() {
 
+		this.constants = {
+			CONSULT_VISIBLE : 'consult-visible',
+			FORM_VISIBLE : 'form-visible'
+		};
+
 		var setApiService = function(apiService) {
 			this.apiService = apiService;
 		};
@@ -15,11 +20,13 @@
 		var showConsult = function(update) {
 			this.isConsult = true;
 			update && this.update();
+			this.broadcast(this.constants.CONSULT_VISIBLE);
 		}
 
 		var showForm = function() {
 			this.isConsult = false;
 			this.onFormVisible();
+			this.broadcast(this.constants.FORM_VISIBLE);
 		}
 
 		var onFormVisible = function() {
@@ -125,9 +132,29 @@
 
 		this.numberOfPages = new Array(1);
 		this.isConsult = true;
-		this.controllerScope = null;
+
+		this.eventListeners = {};
+
+		var broadcast = function(eventName, attrs) {
+			if (this.eventListeners[eventName]) {
+				this.eventListeners[eventName].forEach(function(el) {
+					el();
+				});
+			}
+		};
+
+		// Listener must be a function
+		var registerEventListener = function(eventName, listener) {
+			if (!this.eventListeners[eventName])
+				this.eventListeners[eventName] = [];
+			this.eventListeners[eventName].push(listener);
+		}
 
 		var self = {
+			constants : this.constants,
+			eventListeners : this.eventListeners,
+			broadcast : broadcast,
+			registerEventListener : registerEventListener,
 			isConsult : this.isConsult,
 			form : this.form,
 			beans : this.beans,
