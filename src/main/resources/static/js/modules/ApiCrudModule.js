@@ -1,10 +1,43 @@
 (function() {
 	var app = angular.module('ApiCrud', []);
 
-	// CrudController
-	app.factory('ApiCrudController', [ function() {
+	app.factory('SoviBroadcast', [ function() {
 
-		this.constants = {
+		this.eventListeners = {};
+
+		var broadcast = function(eventName, attrs) {
+			if (this.eventListeners[eventName]) {
+				this.eventListeners[eventName].forEach(function(el) {
+					el();
+				});
+			}
+		};
+
+		// Listener must be a function
+		var registerEventListener = function(eventName, listener) {
+			if (!this.eventListeners[eventName])
+				this.eventListeners[eventName] = [];
+			this.eventListeners[eventName].push(listener);
+		};
+
+		var self = {
+			eventListeners : this.eventListeners,
+			broadcast : broadcast,
+			registerEventListener : registerEventListener
+		};
+
+		return {
+			build : function(service) {
+				angular.extend(service, self);
+			}
+		};
+
+	} ]);
+
+	// CrudController
+	app.factory('ApiCrudController', [ 'SoviBroadcast', function(SoviBroadcast) {
+
+		this.events = {
 			CONSULT_VISIBLE : 'consult-visible',
 			FORM_VISIBLE : 'form-visible'
 		};
@@ -20,13 +53,13 @@
 		var showConsult = function(update) {
 			this.isConsult = true;
 			update && this.update();
-			this.broadcast(this.constants.CONSULT_VISIBLE);
+			this.broadcast(this.events.CONSULT_VISIBLE);
 		}
 
 		var showForm = function() {
 			this.isConsult = false;
 			this.onFormVisible();
-			this.broadcast(this.constants.FORM_VISIBLE);
+			this.broadcast(this.events.FORM_VISIBLE);
 		}
 
 		var onFormVisible = function() {
@@ -133,28 +166,8 @@
 		this.numberOfPages = new Array(1);
 		this.isConsult = true;
 
-		this.eventListeners = {};
-
-		var broadcast = function(eventName, attrs) {
-			if (this.eventListeners[eventName]) {
-				this.eventListeners[eventName].forEach(function(el) {
-					el();
-				});
-			}
-		};
-
-		// Listener must be a function
-		var registerEventListener = function(eventName, listener) {
-			if (!this.eventListeners[eventName])
-				this.eventListeners[eventName] = [];
-			this.eventListeners[eventName].push(listener);
-		}
-
 		var self = {
-			constants : this.constants,
-			eventListeners : this.eventListeners,
-			broadcast : broadcast,
-			registerEventListener : registerEventListener,
+			events : this.events,
 			isConsult : this.isConsult,
 			form : this.form,
 			beans : this.beans,
@@ -178,6 +191,8 @@
 			previousPage : previousPage,
 			setPageLength : setPageLength
 		};
+		
+		SoviBroadcast.build(self);
 
 		return {
 			build : function(service) {
