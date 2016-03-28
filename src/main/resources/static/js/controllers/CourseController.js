@@ -43,6 +43,12 @@ app
 									bean['courseId'] = $scope.form.id;
 								}
 							};
+							
+							$scope.showModule = function(subject) {
+								$scope.activeTab = 1;
+								$scope.module.filter.subjectId = subject.id;
+								$scope.module.executeFilter();
+							};
 
 							// Module Crud Config
 							$scope.module = {};
@@ -52,12 +58,42 @@ app
 							$scope.module.setPageLength(10);
 							$scope.moduleTabSelected = function() {
 								$scope.module.goPage(0);
+								$scope.module.updateFilters();
 							}
 							$scope.module['preSaveForm'] = function(bean) {
 								if (bean) {
 									bean['courseId'] = $scope.form.id;
 								}
 							};
+
+							// Filter
+							{
+								$scope.module.filter = {};
+
+								$scope.module.onFilterSubjectSelect = function() {
+									$scope.module.executeFilter();
+								};
+
+								$scope.module.executeFilter = function() {
+									if ($scope.module.filter.subjectId === 'Todas') {
+										delete $scope.module.query.subjectId;
+									} else if ($scope.module.filter.subjectId) {
+										$scope.module.query.subjectId = $scope.module.filter.subjectId;
+									}
+									$scope.module.update();
+								};
+
+								$scope.module.updateFilters = function() {
+									SubjectService.findAll(function(error, data) {
+										if (error)
+											console.error(error);
+										else {
+											$scope.module.filter.subjects = data;
+										}
+									});
+								};
+							}
+
 							$scope.$watch('module.beans', function(newValue) {
 								if (newValue) {
 									var bean = {};
@@ -145,6 +181,26 @@ app
 
 								$scope.classschedulement.onFilterSubjectSelect = function() {
 									$scope.classschedulement.executeFilter();
+
+									$scope.classschedulement.filter.modules = [];
+
+									if ($scope.classschedulement.filter.subjectId === 'Todas') {
+										delete $scope.classschedulement.query.moduleId;
+									} else if ($scope.classschedulement.filter.subjectId) {
+										ModuleService.findQuery({
+											subjectId : $scope.classschedulement.filter.subjectId
+										}, function(error, data) {
+											if (error) {
+												console.error(error);
+											} else {
+												$scope.classschedulement.filter.modules = data;
+											}
+										});
+									}
+								};
+
+								$scope.classschedulement.onFilterModuleSelect = function() {
+									$scope.classschedulement.executeFilter();
 								};
 
 								$scope.classschedulement.executeFilter = function() {
@@ -153,6 +209,12 @@ app
 									} else if ($scope.classschedulement.filter.subjectId) {
 										$scope.classschedulement.query.subjectId = $scope.classschedulement.filter.subjectId;
 									}
+									if ($scope.classschedulement.filter.moduleId === 'Todos') {
+										delete $scope.classschedulement.query.moduleId;
+									} else if ($scope.classschedulement.filter.moduleId) {
+										$scope.classschedulement.query.moduleId = $scope.classschedulement.filter.moduleId;
+									}
+
 									$scope.classschedulement.update();
 								};
 
