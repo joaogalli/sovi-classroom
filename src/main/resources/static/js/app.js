@@ -88,6 +88,26 @@ app.factory('StudentService', [ 'ApiService', function(ApiService) {
 	return ApiService.build('students');
 } ]);
 
+app.factory('EagerLoadSet', [ function() {
+	return {
+		subject : {
+			fk : 'subjectId',
+			collection : 'subjects',
+			name : 'subject'
+		},
+		module : {
+			fk : 'moduleId',
+			collection : 'modules',
+			name : 'module'
+		},
+		course : {
+			fk : 'courseId',
+			collection : 'course',
+			name : 'course'
+		}
+	};
+} ]);
+
 app.controller('NavigationController', [ '$scope', '$rootScope',
 		'AuthenticationService',
 		function($scope, $rootScope, AuthenticationService) {
@@ -111,8 +131,9 @@ app.controller('HomeController', [
 		'ClassSchedulementService',
 		'ModuleService',
 		'SubjectService',
+		'EagerLoadSet',
 		function($scope, $rootScope, $uibModal, ClassSchedulementService,
-				ModuleService, SubjectService) {
+				ModuleService, SubjectService, EagerLoadSet) {
 			$rootScope.$watch('authenticated', function(newValue) {
 				$scope.isAuthenticated = newValue;
 			});
@@ -159,42 +180,23 @@ app.controller('HomeController', [
 			updateClassSchedulements();
 
 			function findClassSchedulementsQuery(query, overpast) {
+
+				var eagerLoad = [ EagerLoadSet.subject, EagerLoadSet.module ];
+
 				ClassSchedulementService.findQuery(query, function(error, data) {
 					if (error) {
 						console.error(error);
 					} else {
+						console.info('classes: ', data);
 						data.forEach(function(el) {
 							el.overpast = overpast;
 							$scope.classSchedulements.push(el);
-							fillModule(el);
 						});
 					}
 				}, {
+					eagerLoad : eagerLoad,
 					page : 0,
 					pageLength : 3
-				});
-			}
-
-			function fillModule(classSchedulement) {
-				ModuleService.findById(classSchedulement.moduleId,
-						function(error, data) {
-							if (error)
-								console.error(error);
-							else {
-								classSchedulement.module = data;
-								fillSubject(classSchedulement);
-							}
-						});
-			}
-
-			function fillSubject(classSchedulement) {
-				SubjectService.findById(classSchedulement.module.subjectId, function(
-						error, data) {
-					if (error)
-						console.error(error);
-					else {
-						classSchedulement.subject = data;
-					}
 				});
 			}
 
@@ -248,7 +250,10 @@ app.controller('LoginController', [
 				AuthenticationService.authenticate($scope.form.inputEmail,
 						$scope.form.inputPassword, function(error, isAuthenticated) {
 							if (isAuthenticated) {
-								if ($rootScope.nextLoadedTemplateUrl) {
+								console.info('$rootScope.nextLoadedTemplateUrl',
+										$rootScope.nextLoadedTemplateUrl);
+								if ($rootScope.nextLoadedTemplateUrl
+										&& !($rootScope.nextLoadedTemplateUrl == "\login")) {
 									$location.path($rootScope.nextLoadedTemplateUrl);
 									$rootScope.nextLoadedTemplateUrl = null;
 								} else

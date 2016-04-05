@@ -44,10 +44,17 @@
 									if (this.sortString)
 										headers['sort'] = this.sortString;
 
-									if (parameters && (parameters.page || parameters.page === 0)
-											&& parameters.pageLength) {
-										headers['page'] = parameters.page;
-										headers['page-length'] = parameters.pageLength;
+									if (parameters) {
+										if ((parameters.page || parameters.page === 0)
+												&& parameters.pageLength) {
+											headers['page'] = parameters.page;
+											headers['page-length'] = parameters.pageLength;
+										}
+										
+										if (parameters.eagerLoad) {
+											headers['eagerLoad'] = angular.toJson(parameters.eagerLoad);
+										}
+										
 									}
 
 									$http.post('/api/' + this.collection + "/query", query, {
@@ -83,7 +90,7 @@
 									var json = {
 										entries : entries
 									};
-									
+
 									$http.post('/api/bulkFindById', angular.toJson(json)).then(
 											function(response) {
 												callback(null, response.data);
@@ -107,7 +114,7 @@
 										callback('Cannot get number of pages without the pageLength parameter.');
 										return;
 									}
-									
+
 									if (!query)
 										query = {};
 
@@ -121,13 +128,13 @@
 										interceptError(data);
 									});
 								}
-								
+
 								var errorInterceptors = [];
-								
+
 								var addErrorInterceptor = function(errorInterceptor) {
 									errorInterceptors.push(errorInterceptor);
 								}
-								
+
 								function interceptError(data) {
 									console.info('intercepting');
 									errorInterceptors.forEach(function(el) {

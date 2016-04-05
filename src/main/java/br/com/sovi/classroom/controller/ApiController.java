@@ -112,6 +112,39 @@ public class ApiController extends AbstractController {
 		return find(Document.parse(requestBody), request, sort, page, pageLength);
 	}
 
+	/**
+	 * @author Joao Eduardo Galli <joaogalli@gmail.com>
+	 */
+	private class EagerLoad {
+
+		private String fk, collection, name;
+
+		public String getFk() {
+			return fk;
+		}
+
+		public void setFk(String fk) {
+			this.fk = fk;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getCollection() {
+			return collection;
+		}
+
+		public void setCollection(String collection) {
+			this.collection = collection;
+		}
+
+	}
+
 	private ResponseEntity<String> find(Document query, HttpServletRequest request, String sort, Integer page,
 			Integer pageLength) {
 		if (query == null)
@@ -148,8 +181,35 @@ public class ApiController extends AbstractController {
 			documents.add(document);
 		}
 
+		String eagerLoadHeader = request.getHeader("eagerLoad");
+		if (StringUtils.hasText(eagerLoadHeader)) {
+			try {
+				EagerLoad[] eagerLoads = JsonUtils.fromJson(eagerLoadHeader, EagerLoad[].class);
+				for (EagerLoad eagerLoad : eagerLoads) {
+					for (Document document : documents) {
+						if (document.containsKey(eagerLoad.getFk())) {
+							Document documentFromEagerLoad = findDocumentFromEagerLoad(
+									document.getString(eagerLoad.getFk()), eagerLoad.getCollection());
+							if (documentFromEagerLoad != null) {
+								document.put(eagerLoad.getName(), documentFromEagerLoad);
+							}
+						}
+					}
+				}
+			}
+			catch (Throwable t) {
+				logger.error("Error eagerLoading", t);
+			}
+		}
+
 		String json = JsonUtils.toJson(documents);
 		return new ResponseEntity<String>(json, HttpStatus.OK);
+	}
+
+	private Document findDocumentFromEagerLoad(String id, String collectionName) {
+		MongoCollection<Document> collection = db.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find(Filters.eq("_id", new ObjectId(id)));
+		return iterable.first();
 	}
 
 	private void prepareToGoOut(Document document) {
